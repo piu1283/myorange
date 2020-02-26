@@ -21,7 +21,9 @@ public class User {
     private Gender gender;
     private String email;
     private String password;
-
+}
+enum Gender {
+    M,F;
 }
 
 
