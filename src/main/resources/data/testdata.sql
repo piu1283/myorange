@@ -1,0 +1,2 @@
+INSERT INTO `t_user` (`birthday`,`first_name`,`last_name`,`email`,`gender`,`password` ) VALUES('2019-09-30', 'John', 'Wick', 'johnwick123@gmail.com', 1, '123123'),
+('2019-02-21', 'Bastin', 'Jiber', 'basji33@gmail.com', 2, '123123');

@@ -1,0 +1,5 @@
+# some config can be like a single file
+person:
+  family-name: testfamilyname
+  age: 12
+  address: 123123 robert dd

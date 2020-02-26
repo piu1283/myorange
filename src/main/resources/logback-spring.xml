@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--standard console log-->
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}] %-4relative %-5level [%thread]  %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SYS_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--ERROR log, separate from the normal info log. For convenient checking.-->
+        <File>log/error.log</File>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/error.log.%d</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+
+        <encoder charset="UTF-8">
+            <pattern>[%d{HH:mm:ss.SSS}] %-4relative %-5level [%thread]  %logger{35} - %msg %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SYS_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--INFO log, contains all the INFO and WARN level log-->
+        <File>log/info.log</File>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/info.log.%d</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder charset="UTF-8">
+            <pattern>[%d{HH:mm:ss.SSS}] %-4relative %-5level [%thread]  %logger{35} - %msg %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- In the future, if we need to analysis the transaction data, maybe a log file for transaction record is needed.-->
+
+    <root level="INFO">
+        <appender-ref ref="SYS_ERROR"/>
+        <appender-ref ref="SYS_INFO"/>
+    </root>
+
+    <!-- In dev env will print all the debug log -->
+    <springProfile name="dev" >
+        <root level="INFO">
+                <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+</configuration>

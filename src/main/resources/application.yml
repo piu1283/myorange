@@ -1,0 +1,97 @@
+# start other global config
+
+# start mybatis
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+#end mybatis
+
+# end other global config
+
+# spring config
+spring:
+  banner:
+    location: classpath:/templates/banner.txt
+  # set jackson naming strategy for controller
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  # exception if don't found handler
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  # set active config profile
+  profiles:
+    active: dev
+---
+# develop env config
+server:
+  port: 8081
+spring:
+  profiles:
+    - dev
+  datasource:
+    username: root
+    password: 123123123
+    url: jdbc:mysql://localhost:3306/db_test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # default sql script when spring started
+    initialization-mode: ALWAYS
+    schema:
+      - classpath:/data/schema.sql
+      - classpath:/data/testdata.sql
+    druid:
+      # connection pool config
+      # initial size
+      initial-size: 5
+      # minimum idle num of conn
+      min-idle: 5
+      # max active num of conn
+      maxActive: 20
+      # max time out
+      maxWait: 60000
+      # how long will detect idle connection and shut them down
+      timeBetweenEvictionRunsMillis: 60000
+      # minimum time of a connection to stay in the pool
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # open PSCache
+      poolPreparedStatements: true
+      # PSCache size of each connection
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # config stat filters, using for statistic data of sql or request, 'wall' is for fire wall
+      filters: stat,wall,slf4j
+      # connectProperties, open mergeSql function, recording the slow sql
+      connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      # config DruidStatFilter
+      web-stat-filter:
+        enabled: true
+        url-pattern: "/*"
+        exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+      # config DruidStatViewServlet
+      stat-view-servlet:
+        url-pattern: "/druid/*"
+        # IP allowed, if it is empty, allow all the ip
+        allow:
+#        allow: 127.0.0.1,192.168.163.1
+        # IP blocked, if an ip exist both in allowed and blocked, it will be blocked
+#        deny: 192.168.1.73
+        #  allow the function of “Reset All” in web page
+        reset-enable: true
+        # login name
+        login-username: admin
+        # login password
+        login-password: 123
+
+---
+# product env config
+server:
+  port: 8082
+spring:
+  profiles:
+    - prod
+
