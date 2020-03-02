@@ -18,7 +18,7 @@
 		<java.version>1.8</java.version>
 	</properties>
 
-	<spring-version>2.1.1</spring-version>
+<!--	<spring-version>2.1.1</spring-version>-->
 
 	<dependencies>
 <!--		<dependency>-->
@@ -29,18 +29,18 @@
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
 <!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-data-rest</artifactId>-->
 <!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-mail</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
@@ -49,12 +49,6 @@
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-security</artifactId>-->
 <!--		</dependency>-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>2.2.4.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -81,10 +75,10 @@
 			<artifactId>mapper</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.session</groupId>-->
-<!--			<artifactId>spring-session-data-redis</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>com.github.kstyrc</groupId>-->
 <!--			<artifactId>embedded-redis</artifactId>-->
@@ -147,7 +141,7 @@
 			<version>1.1.10</version>
 		</dependency>
 
-		<!--		<dependency>-->
+<!--		<dependency>-->
 <!--			<groupId>org.springframework.restdocs</groupId>-->
 <!--			<artifactId>spring-restdocs-mockmvc</artifactId>-->
 <!--			<scope>test</scope>-->
