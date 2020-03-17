@@ -1,19 +1,22 @@
 package com.ood.myorange;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @SpringBootApplication
 @EnableTransactionManagement
 @PropertySource("classpath:application.yml")
 public class MyorangeApplication implements WebMvcConfigurer {
 
-	public static void main(String[] args) { SpringApplication.run(MyorangeApplication.class, args); }
+	public static void main(String[] args) {
+		ArrayList<Integer> array = new ArrayList<>(new HashSet<>());
 
+		SpringApplication.run(MyorangeApplication.class, args);
+	}
 }

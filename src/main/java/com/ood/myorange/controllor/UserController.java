@@ -2,10 +2,8 @@ package com.ood.myorange.controllor;
 
 import com.ood.myorange.config.Person;
 import com.ood.myorange.dto.UserDto;
-import com.ood.myorange.dto.response.BaseResponse;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.exception.ResourceNotFoundException;
-import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class UserController {
     @PostMapping(path = "/user/{id}")
     public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
         log.info("this is a test log");
-        throw new ResourceNotFoundException("InvalidRequestException");
+        throw new ResourceNotFoundException("file you want is not there.");
     }
 
     @GetMapping(path = "/users")
