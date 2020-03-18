@@ -1,5 +1,6 @@
 package com.ood.myorange.controllor;
 
+import com.ood.myorange.auth.IAuthenticationFacade;
 import com.ood.myorange.config.Person;
 import com.ood.myorange.dto.UserDto;
 import com.ood.myorange.exception.InvalidRequestException;
@@ -7,6 +8,7 @@ import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +24,18 @@ public class UserController {
     Person person;
 
     @Autowired
+    IAuthenticationFacade authenticationFacade; // authenticationFacade can be used to obtain the current login user
+
+    @Autowired
     UserService userService;
 
     @PostMapping(path = "/user/{id}")
+    // https://www.baeldung.com/spring-security-method-security :check this link for more specific usage of PreAuthorize
+    @PreAuthorize("hasAuthority('DOWNLOAD') or hasRole('ADMIN')") // user only has download permission or admin can enter this method
     public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
         log.info("this is a test log");
+        // this line can get the user detail in the context
+        authenticationFacade.getAuthentication().getPrincipal();
         throw new ResourceNotFoundException("file you want is not there.");
     }
 
@@ -38,7 +47,6 @@ public class UserController {
 
     @GetMapping(path = "/all")
     public List<UserDto> getAll() {
-        List<UserDto> users = userService.getAllUser();
-        return users;
+        return userService.getAllUser();
     }
 }

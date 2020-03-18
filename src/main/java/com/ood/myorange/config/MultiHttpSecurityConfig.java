@@ -128,8 +128,7 @@ public class MultiHttpSecurityConfig {
                             new AntPathRequestMatcher("/api/logout"))
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/**").hasRole(RoleConstant.USER.toString());
-
+                    .antMatchers("/api/**").hasAuthority().hasRole(RoleConstant.USER.toString());
         }
     }
 
