@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.sql.DatabaseMetaData;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -14,10 +16,15 @@ import java.util.Date;
 public class BaseResponse {
     private String msg;
     private Object resultData;
-    private Date timestamp = new Date();
+    private Timestamp timestamp = new Timestamp(new Date().getTime());
 
     private BaseResponse(String msg, Object data) {
         this.msg = msg;
+        this.resultData = data;
+    }
+
+    private BaseResponse(Object data) {
+        this.msg = "";
         this.resultData = data;
     }
 
@@ -27,6 +34,10 @@ public class BaseResponse {
 
     public static BaseResponse success(Object data) {
         return new BaseResponse(HttpStatus.OK.getReasonPhrase(), data);
+    }
+
+    public static BaseResponse process(Object data) {
+        return new BaseResponse(data);
     }
 
     public static  BaseResponse success(String msg, Object data) {

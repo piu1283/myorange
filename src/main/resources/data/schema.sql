@@ -6,13 +6,28 @@ CREATE TABLE `t_user` (
   `last_name` varchar(20) NOT NULL COMMENT 'last_name',
   `email` varchar(50) NOT NULL COMMENT 'email should be unique',
   `gender` enum('M','F') NOT NULL COMMENT 'gender using enum',
-  `password` varchar(50) NOT NULL COMMENT 'password, max for 20 char',
+  `password` varchar(100) NOT NULL COMMENT 'password, max for 20 char',
   `memory_size` bigint UNSIGNED DEFAULT 1073741824 COMMENT 'total space default 1G',
   `used_size` bigint UNSIGNED DEFAULT 0 COMMENT 'used space',
   `source_id` INT(11) NOT NULL DEFAULT 1 COMMENT 'upload source id',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `blocked` boolean NOT NULL DEFAULT false COMMENT 'is blocked or not, if yes, user cannot login'
 ) COMMENT 'user information table';
+
+DROP TABLE IF EXISTS `t_permission`;
+CREATE TABLE `t_permission` (
+  `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
+  `name` varchar(20) NOT NULL UNIQUE COMMENT 'name',
+  `desc` varchar(50) COMMENT 'description of the permission',
+  `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time'
+) COMMENT 'permission information table';
+
+DROP TABLE IF EXISTS `user_permission`;
+CREATE TABLE `user_permission` (
+  `user_id` INT(11) COMMENT 'id',
+  `permission_id` INT(11) COMMENT 'name',
+  PRIMARY KEY(`user_id`,`permission_id`)
+) COMMENT 'user permission relation information table';
 
 DROP TABLE IF EXISTS `t_source`;
 CREATE TABLE `t_source` (
@@ -28,7 +43,7 @@ DROP TABLE IF EXISTS `t_admin`;
 CREATE TABLE `t_admin` (
   `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
   `name` varchar(20) NOT NULL COMMENT 'name',
-  `password` varchar(50) NOT NULL COMMENT 'password, max for 50 char',
+  `password` varchar(100) NOT NULL COMMENT 'password, max for 50 char',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time'
 ) COMMENT 'admin information table';
 
@@ -86,4 +101,4 @@ CREATE TABLE `user_dir` (
     `delete_time` TIMESTAMP COMMENT 'delete time',
 	`deleted` boolean NOT NULL DEFAULT false COMMENT 'is_delete',
 	`default` boolean NOT NULL DEFAULT false COMMENT 'default, every user will have an default dir called root'
-) COMMENT 'user file table';
+) COMMENT 'user dir table';

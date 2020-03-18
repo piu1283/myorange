@@ -60,7 +60,7 @@
 
     <!-- In dev env will print all the debug log -->
     <springProfile name="dev" >
-        <root level="INFO">
+        <root level="DEBUG">
                 <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>

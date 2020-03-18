@@ -2,9 +2,11 @@ package com.ood.myorange.service.impl;
 
 import com.ood.myorange.dao.UserDao;
 import com.ood.myorange.dto.UserDto;
+import com.ood.myorange.dto.UserInfo;
 import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.UserService;
 import com.ood.myorange.util.ModelMapperUtil;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserProfile(UserDto queryDto) {
         User user = ModelMapperUtil.mapping(queryDto, User.class);
-        User filledUser = userDao.selectByPrimaryKey(user);
+        User filledUser = userDao.selectOne(user);
         return ModelMapperUtil.mapping(filledUser, UserDto.class);
+    }
+
+    @Override
+    public User getUserByEmail(String emailAddress) {
+        return userDao.getUserByEmail(emailAddress);
     }
 }

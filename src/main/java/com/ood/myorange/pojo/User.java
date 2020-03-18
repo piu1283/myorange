@@ -28,8 +28,6 @@ public class User {
     private Timestamp createdTime;
     private boolean blocked;
 }
-enum Gender {
-    M,F;
-}
+
 
 
