@@ -2,10 +2,7 @@ package com.ood.myorange.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.dto.AdminInfo;
-import com.ood.myorange.dto.UserDto;
-import com.ood.myorange.dto.UserInfo;
 import com.ood.myorange.dto.response.BaseResponse;
-import com.ood.myorange.util.ModelMapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
