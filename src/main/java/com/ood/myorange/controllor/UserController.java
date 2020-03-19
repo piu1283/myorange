@@ -1,9 +1,7 @@
 package com.ood.myorange.controllor;
 
 import com.ood.myorange.auth.IAuthenticationFacade;
-import com.ood.myorange.config.Person;
 import com.ood.myorange.dto.UserDto;
-import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +16,8 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api")
 public class UserController {
-
-    @Autowired
-    Person person;
 
     @Autowired
     IAuthenticationFacade authenticationFacade; // authenticationFacade can be used to obtain the current login user
@@ -29,9 +25,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping(path = "/user/{id}")
-    // https://www.baeldung.com/spring-security-method-security :check this link for more specific usage of PreAuthorize
-    @PreAuthorize("hasAuthority('DOWNLOAD') or hasRole('ADMIN')") // user only has download permission or admin can enter this method
+    @PostMapping(path = "/users/{id}")
     public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
         log.info("this is a test log");
         // this line can get the user detail in the context
@@ -40,12 +34,9 @@ public class UserController {
     }
 
     @GetMapping(path = "/users")
-    public String getUsers(@RequestParam("toke_task") String tokenTask) {
-        log.info("this is a test log");
-        throw new InvalidRequestException("InvalidRequestException");
-    }
-
-    @GetMapping(path = "/all")
+    // user only has download permission or admin can enter this method
+    // https://www.baeldung.com/spring-security-method-security :check this link for more specific usage of PreAuthorize
+    @PreAuthorize("hasAuthority('DOWNLOADE')")
     public List<UserDto> getAll() {
         return userService.getAllUser();
     }

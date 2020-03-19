@@ -1,26 +1,23 @@
 package com.ood.myorange.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.auth.CustomizeAdminAuthenticationSuccessHandler;
 import com.ood.myorange.auth.CustomizeAuthenticationEntryPoint;
 import com.ood.myorange.auth.CustomizeAuthenticationFailureHandler;
 import com.ood.myorange.auth.CustomizeUserAuthenticationSuccessHandler;
 import com.ood.myorange.constant.RoleConstant;
-import com.ood.myorange.filter.ShareKeyFilter;
 import com.ood.myorange.service.impl.CustomAdminDetailService;
 import com.ood.myorange.service.impl.CustomUserDetailService;
-import com.ood.myorange.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -33,6 +30,7 @@ import javax.annotation.Resource;
  * Created by Chen on 3/17/20.
  */
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableRedisHttpSession
 @Configuration
 public class MultiHttpSecurityConfig {
@@ -118,6 +116,9 @@ public class MultiHttpSecurityConfig {
             http.csrf().disable().antMatcher("/api/**")
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                     .and()
+                    .authorizeRequests()
+                    .antMatchers("/api/**").hasRole(RoleConstant.USER.toString())
+                    .and()
                     .formLogin()
                     .loginProcessingUrl("/api/login")
                     .successHandler(authenticationSuccessHandler)
@@ -126,9 +127,8 @@ public class MultiHttpSecurityConfig {
                     .logout()
                     .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
                             new AntPathRequestMatcher("/api/logout"))
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/api/**").hasAuthority().hasRole(RoleConstant.USER.toString());
+                    .and();
+
         }
     }
 
@@ -136,20 +136,8 @@ public class MultiHttpSecurityConfig {
     @Order(3)
     public static class OtherSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-        @Autowired
-        CustomizeAuthenticationEntryPoint authenticationEntryPoint;
-
-        @Autowired
-        ObjectMapper objectMapper;
-
-        @Autowired
-        RedisUtil redisUtil;
-
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().antMatcher("/s/**")
-                    .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                    .and()
-                    .addFilterBefore(new ShareKeyFilter(redisUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);
+            http.csrf().disable().authorizeRequests().anyRequest().permitAll();
         }
     }
 }

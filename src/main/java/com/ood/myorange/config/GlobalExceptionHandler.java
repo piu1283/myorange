@@ -4,6 +4,7 @@ import com.ood.myorange.dto.response.BaseResponse;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = { HttpRequestMethodNotSupportedException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public BaseResponse HttpRequestMethodNotSupportedExceptionHandler(Exception ex) {
+        return BaseResponse.failure(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public BaseResponse AccessDeniedExceptionExceptionHandler(Exception ex) {
         return BaseResponse.failure(ex.getMessage());
     }
 

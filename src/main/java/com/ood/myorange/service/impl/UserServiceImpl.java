@@ -2,11 +2,9 @@ package com.ood.myorange.service.impl;
 
 import com.ood.myorange.dao.UserDao;
 import com.ood.myorange.dto.UserDto;
-import com.ood.myorange.dto.UserInfo;
 import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.UserService;
 import com.ood.myorange.util.ModelMapperUtil;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableGlobalMethodSecurity
 @PropertySource("classpath:application.yml")
 public class MyorangeApplication implements WebMvcConfigurer {
 
