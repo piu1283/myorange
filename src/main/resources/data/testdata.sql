@@ -1,6 +1,7 @@
 INSERT INTO
 `t_user` (`birthday`,`first_name`,`last_name`,`email`,`gender`,`password` )
 VALUES
+-- password is 123123
 ('2019-09-30', 'John', 'Wick', 'johnwick123@gmail.com', 1, '$2a$10$BnXQyK65iP5wdnCz.B00aunLi30shp.HohGy4i2JNUEnq9EVemQUm'),
 ('2019-02-21', 'Bastin', 'Jiber', 'basji33@gmail.com', 2, '$2a$10$BnXQyK65iP5wdnCz.B00aunLi30shp.HohGy4i2JNUEnq9EVemQUm');
 

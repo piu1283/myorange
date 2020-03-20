@@ -34,7 +34,7 @@ spring:
     host: localhost
     port: 6379
     lettuce:
-      shutdown-timeout: 100 # 关闭超时时间
+      shutdown-timeout: 100
       pool:
         max-active: 8
         max-idle: 4

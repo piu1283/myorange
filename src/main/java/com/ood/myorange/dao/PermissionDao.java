@@ -18,7 +18,6 @@ public interface PermissionDao extends BaseDao<Permission> {
     @Results({// column mapping
             @Result(column = "permission_name", property = "permissionName"),
             @Result(column = "permission_id", property = "permissionId")
-    }
-    )
+    })
     List<Permission> getPermissionByUserId(int userId);
 }
