@@ -67,6 +67,7 @@ public class MultiHttpSecurityConfig {
                     .failureHandler(authenticationFailureHandler)
                     .and()
                     .logout()
+                    .logoutUrl("/admin/logout")
                     .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
                             new AntPathRequestMatcher("/admin/logout"))
                     .and()
@@ -125,6 +126,7 @@ public class MultiHttpSecurityConfig {
                     .failureHandler(authenticationFailureHandler)
                     .and()
                     .logout()
+                    .logoutUrl("/api/logout")
                     .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
                             new AntPathRequestMatcher("/api/logout"))
                     .and();
