@@ -33,7 +33,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserProfile(UserDto queryDto) {
         User user = ModelMapperUtil.mapping(queryDto, User.class);
-        User filledUser = userDao.selectByPrimaryKey(user);
+        User filledUser = userDao.selectOne(user);
         return ModelMapperUtil.mapping(filledUser, UserDto.class);
+    }
+
+    @Override
+    public User getUserByEmail(String emailAddress) {
+        return userDao.getUserByEmail(emailAddress);
     }
 }

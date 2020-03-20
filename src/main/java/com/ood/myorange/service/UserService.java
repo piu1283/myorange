@@ -1,7 +1,8 @@
 package com.ood.myorange.service;
 
 import com.ood.myorange.dto.UserDto;
-import org.springframework.stereotype.Service;
+import com.ood.myorange.pojo.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public interface UserService {
     List<UserDto> getAllUser();
-
     UserDto getUserProfile(UserDto user);
+    User getUserByEmail(String emailAddress);
+
 }

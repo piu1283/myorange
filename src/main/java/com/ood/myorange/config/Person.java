@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by Chen on 2/21/20.
+ *
+ * this just an example for how to load configuration into an object from yml file
  */
 @Data
 @ToString

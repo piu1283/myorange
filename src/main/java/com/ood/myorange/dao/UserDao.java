@@ -13,6 +13,6 @@ public interface UserDao extends BaseDao<User> {
     // the BaseDao has already integrate some CRUD function.
     // can put user defined SQL like this
     // the firstName is in the Employee Class
-    @Select("SELECT * FROM `t_user` WHERE first_name=#{firstName}")
-    User getUserByFirstName(User user);
+    @Select("SELECT * FROM `t_user` WHERE email=#{email}")
+    User getUserByEmail(String email);
 }

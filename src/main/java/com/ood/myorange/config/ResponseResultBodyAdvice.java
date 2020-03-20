@@ -23,7 +23,7 @@ public class ResponseResultBodyAdvice implements ResponseBodyAdvice<Object> {
         if (o instanceof BaseResponse) {
             return o;
         }
-        return BaseResponse.success(o);
+        return BaseResponse.process(o);
     }
 
     @Override

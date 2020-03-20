@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by Chen on 2/21/20.
@@ -21,9 +22,12 @@ public class User {
     private Gender gender;
     private String email;
     private String password;
+    private Long memorySize;
+    private Long usedSize;
+    private Integer sourceId;
+    private Timestamp createdTime;
+    private boolean blocked;
 }
-enum Gender {
-    M,F;
-}
+
 
 

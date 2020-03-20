@@ -1,6 +1,7 @@
 package com.ood.myorange.exception;
 
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Chen on 2/24/20.
  */
-@Data
+@Getter
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
     private Map<String, List<String>> data;
