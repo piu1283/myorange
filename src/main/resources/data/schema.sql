@@ -20,7 +20,7 @@ CREATE TABLE `t_permission` (
   `name` varchar(20) NOT NULL UNIQUE COMMENT 'name',
   `desc` varchar(50) COMMENT 'description of the permission',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time'
-) COMMENT 'permission information table';
+) COMMENT 'permission information table (download, upload)';
 
 DROP TABLE IF EXISTS `user_permission`;
 CREATE TABLE `user_permission` (

@@ -1,12 +1,11 @@
 package com.ood.myorange.controllor;
 
 import com.ood.myorange.auth.IAuthenticationFacade;
-import com.ood.myorange.dto.UserDto;
+import com.ood.myorange.dto.response.UserDto;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,10 +33,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/users")
-    // user only has download permission or admin can enter this method
-    // https://www.baeldung.com/spring-security-method-security :check this link for more specific usage of PreAuthorize
-    @PreAuthorize("hasAuthority('DOWNLOADE')")
-    public List<UserDto> getAll() {
+    public List<UserDto> getAllUser() {
         return userService.getAllUser();
     }
 }
