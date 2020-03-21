@@ -1,7 +1,7 @@
 package com.ood.myorange.service.impl;
 
 import com.ood.myorange.dao.UserDao;
-import com.ood.myorange.dto.UserDto;
+import com.ood.myorange.dto.response.UserDto;
 import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.UserService;
 import com.ood.myorange.util.ModelMapperUtil;
@@ -21,11 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUser() {
-        List<User> users = userDao.selectAll();
+        // 1.拿到 User
+        List<User> users = userDao.getUsers();
         List<UserDto> res = new ArrayList<>();
-        for (User u : users) {
-            UserDto userDto = ModelMapperUtil.mapping(u, UserDto.class);
-            res.add(userDto);
+        // 2. User -> UserRequest(UserDto)
+        for (User user : users) {
+            // add other logic
+            res.add(ModelMapperUtil.mapping(user, UserDto.class));
         }
         return res;
     }

@@ -57,7 +57,8 @@ public class MultiHttpSecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
+            http.cors().and()
+                    .csrf().disable()
                     .antMatcher("/admin/**")
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                     .and()
@@ -114,7 +115,8 @@ public class MultiHttpSecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().antMatcher("/api/**")
+            http.cors().and()
+                    .csrf().disable().antMatcher("/api/**")
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                     .and()
                     .authorizeRequests()
@@ -139,7 +141,7 @@ public class MultiHttpSecurityConfig {
     public static class OtherSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().authorizeRequests().anyRequest().permitAll();
+            http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
         }
     }
 }
