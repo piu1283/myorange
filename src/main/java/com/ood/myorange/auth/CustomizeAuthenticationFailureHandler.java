@@ -27,7 +27,7 @@ public class CustomizeAuthenticationFailureHandler implements AuthenticationFail
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         log.warn("Authentication fail due to the reason: ",e);
-        BaseResponse response = BaseResponse.failure("Authentication process failed.");
+        BaseResponse response = BaseResponse.failure(e.getMessage());
         httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(objectMapper.writeValueAsString(response));

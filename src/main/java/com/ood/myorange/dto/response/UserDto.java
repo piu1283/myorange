@@ -1,4 +1,4 @@
-package com.ood.myorange.dto;
+package com.ood.myorange.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
