@@ -22,7 +22,7 @@ spring:
     add-mappings: false
   # set active config profile
   profiles:
-    active: dev
+    active: @activatedProperties@
 ---
 # develop env config
 server:
@@ -103,5 +103,40 @@ server:
   port: 8082
 spring:
   profiles:
-    - prod
+    - test
+  redis:
+    host: localhost
+    port: 6379
+    lettuce:
+      shutdown-timeout: 100
+      pool:
+        max-active: 8
+        max-idle: 4
+        max-wait: -1
+        min-idle: 0
+  datasource:
+    username: root
+    password:
+    url: jdbc:mysql://127.0.0.1:3306/db_test?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialization-mode: ALWAYS
+    schema:
+      - classpath:/data/schema.sql
+      - classpath:/data/testdata.sql
+    druid:
+      initial-size: 5
+      min-idle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      filters: stat,wall,slf4j
+      connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
 
