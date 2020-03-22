@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class UserController {
     public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
         log.info("this is a test log");
         // this line can get the user detail in the context
-        authenticationFacade.getAuthentication().getPrincipal();
+        System.out.println(authenticationFacade.getUserInfo());
         throw new ResourceNotFoundException("file you want is not there.");
     }
 

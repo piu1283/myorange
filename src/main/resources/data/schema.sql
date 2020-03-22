@@ -72,7 +72,7 @@ CREATE TABLE `t_share` (
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
 	`download_count` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'download_count',
 	`download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
-    `share_deadline` TIMESTAMP COMMENT 'expired time, every share must have an expire time',
+    `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key'
 ) COMMENT 'share table';
 
@@ -89,7 +89,7 @@ CREATE TABLE `user_file` (
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
     `deleted` boolean DEFAULT false COMMENT 'file is delete or not',
-    `delete_time` TIMESTAMP COMMENT 'delete time'
+    `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time'
 ) COMMENT 'user file table';
 
 DROP TABLE IF EXISTS `user_dir`;
@@ -99,7 +99,7 @@ CREATE TABLE `user_dir` (
     `parent_id` INT(11)  NOT NULL COMMENT 'dir path',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
-    `delete_time` TIMESTAMP COMMENT 'delete time',
+    `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time',
 	`deleted` boolean NOT NULL DEFAULT false COMMENT 'is_delete',
 	`default` boolean NOT NULL DEFAULT false COMMENT 'default, every user will have an default dir called root'
 ) COMMENT 'user dir table';

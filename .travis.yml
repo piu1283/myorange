@@ -1,0 +1,13 @@
+language: java
+sudo: true
+jdk:
+    - openjdk8
+services:
+    - redis
+    - mysql
+before_install:
+    - chmod +x ./mvnw
+    - mysql -e 'CREATE DATABASE IF NOT EXISTS db_test;'
+    - ./mvnw test -P test
+script:
+    - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
