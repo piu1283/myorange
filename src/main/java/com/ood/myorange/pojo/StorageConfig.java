@@ -23,7 +23,7 @@ public class StorageConfig {
     private int id;
     private String name;
     private StorageConfiguration.StorageType type;
-    private StorageConfiguration config;
+    private String config;
     private Timestamp createdTime;
     private Timestamp modifyTime;
     private boolean currentUse;

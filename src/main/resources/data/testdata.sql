@@ -18,4 +18,11 @@ VALUES
 INSERT INTO
 `user_permission` (`user_id`, `permission_id`)
 VALUES
-(1,1),(1,2),(2,1),(2,2)
+(1,1),(1,2),(2,1),(2,2);
+
+INSERT INTO
+`t_source` (`name`, `type`, `config`)
+VALUES
+('myS3_1', 'AWS_S3', 's3_token1'),
+('myS3_2', 'AWS_S3', 's3_token1'),
+('myAzure_1', 'Azure', 'Azure_token1');

@@ -1,6 +1,7 @@
 package com.ood.myorange.controllor;
 
 import com.ood.myorange.auth.IAuthenticationFacade;
+import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.dto.response.BaseResponse;
 import com.ood.myorange.service.StorageConfigService;
@@ -23,7 +24,7 @@ public class StorageConfigController {
     @Autowired
     StorageConfigService storageConfigService;
 
-    @PostMapping("/view-configuration-list")
+    @GetMapping("/view-configuration-list")
     public BaseResponse viewStorageConfigList(
             @RequestBody Integer adminId
     ){
@@ -32,12 +33,12 @@ public class StorageConfigController {
         return BaseResponse.success();
     }
 
-    @PostMapping("/view-storage-config/{id}")
+    @GetMapping("/view-storage-config/{id}")
     public StorageConfigDto viewOneStorageConfig(
-            @PathVariable("id") int configId
+            @PathVariable("id") int id
     ){
-//        authenticationFacade.getAuthentication().getPrincipal();
-        StorageConfigDto result = storageConfigService.getConfiguration( configId );
+        authenticationFacade.getAuthentication().getPrincipal();
+        StorageConfigDto result = storageConfigService.getConfiguration( id );
         return result;
     }
 
@@ -45,7 +46,7 @@ public class StorageConfigController {
     public BaseResponse addStorageConfig(
             @RequestBody StorageConfigDto storageConfigDto
     ){
-//        authenticationFacade.getAuthentication().getPrincipal();
+        authenticationFacade.getAuthentication().getPrincipal();
         storageConfigService.addConfiguration( storageConfigDto );
         return BaseResponse.success();
     }
@@ -54,7 +55,7 @@ public class StorageConfigController {
     public BaseResponse updateStorageConfig(
             @RequestBody StorageConfigDto storageConfigDto
     ){
-//        authenticationFacade.getAuthentication().getPrincipal();
+        authenticationFacade.getAuthentication().getPrincipal();
         storageConfigService.updateConfiguration( storageConfigDto );
         return BaseResponse.success();
     }
@@ -64,7 +65,7 @@ public class StorageConfigController {
             @RequestBody int configId
     ){
         storageConfigService.deleteConfiguration( configId );
-//        authenticationFacade.getAuthentication().getPrincipal();
+        authenticationFacade.getAuthentication().getPrincipal();
         return BaseResponse.success();
     }
 }

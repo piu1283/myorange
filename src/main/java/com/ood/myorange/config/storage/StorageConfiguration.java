@@ -4,9 +4,11 @@ public interface StorageConfiguration {
     public enum StorageType {
         LOCAL, AWS_S3, Azure;
     }
+    // Shared
+    default String getKeyId() {return "";}
 
-    String getKeyId();
-    String getAccessKey();
-    String getRegion();
-    String getBucketName();
+    // S3 Specific
+    default String getAccessKey() {return "";}
+    default String getRegion() {return "";}
+    default String getBucketName() {return "";}
 }
