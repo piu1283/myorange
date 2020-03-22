@@ -15,8 +15,8 @@ import java.sql.Timestamp;
 public class StorageConfigDto {
     private int id;
     private String name;
-    private StorageConfiguration.StorageType type;
-    private StorageConfiguration config;
+    private String type;
+    private String config;
     private Timestamp createdTime;
     private Timestamp modifyTime;
     private boolean currentUse;
