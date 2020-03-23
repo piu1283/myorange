@@ -24,6 +24,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
     @Override
     public List<StorageConfigDto> getAllConfigurations() {
+
         List<StorageConfig> configList = storageConfigDao.selectAll();
 
         List<StorageConfigDto> result = new ArrayList<>();
