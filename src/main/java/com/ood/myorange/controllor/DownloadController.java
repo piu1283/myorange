@@ -1,5 +1,6 @@
 package com.ood.myorange.controllor;
 
+import com.ood.myorange.auth.IAuthenticationFacade;
 import com.ood.myorange.dao.StorageConfigDao;
 import com.ood.myorange.dto.response.BaseResponse;
 import com.ood.myorange.pojo.StorageConfig;
@@ -9,16 +10,17 @@ import com.ood.myorange.util.storageUtils.StorageUtil;
 import com.oracle.tools.packager.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.ood.myorange.dto.response.BaseResponse.success;
 
 @RestController
 @Slf4j
+@RequestMapping("/api")
 public class DownloadController {
+
+    @Autowired
+    IAuthenticationFacade authenticationFacade; // authenticationFacade can be used to obtain the current login user
 
     @Autowired
     StorageUtilFactory storageUtilFactory;
@@ -28,11 +30,11 @@ public class DownloadController {
 
     // This just an example
     // Not working
-    @GetMapping("/d/{key}")
-    public BaseResponse getPreSignedURL(@PathVariable("key") int key) {
-        Log.info("Trying to get pro-signed url");
-        StorageConfig result = storageConfigDao.getDataSourceById( key );
+    @GetMapping("/download/{fileName}")
+    public void getPreSignedURL(@PathVariable("fileName") int fileName) {
+        authenticationFacade.getAuthentication().getPrincipal();
+        StorageConfig result = storageConfigDao.getDataSourceById( fileName );
         StorageUtil util = storageUtilFactory.getInstance(result.getType());
-        return success("Successfully get download link", util.getDownloadUrl( 1 ));
+        Log.info("Successfully get download link: " + util.getDownloadUrl( 1 ));
     }
 }

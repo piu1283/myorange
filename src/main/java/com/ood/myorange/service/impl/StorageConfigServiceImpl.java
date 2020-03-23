@@ -23,7 +23,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
     StorageConfigDao storageConfigDao;
 
     @Override
-    public List<StorageConfigDto> getAllConfigurations(int adminId) {
+    public List<StorageConfigDto> getAllConfigurations() {
         List<StorageConfig> configList = storageConfigDao.selectAll();
 
         List<StorageConfigDto> result = new ArrayList<>();
@@ -42,22 +42,24 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
     @Override
     public void addConfiguration(StorageConfigDto configDto) {
-        StorageConfig storageConfig = ModelMapperUtil.mapping( configDto, StorageConfig.class );
-        Log.info("Adding config");
-        Log.info(storageConfig.toString());
-        StorageConfiguration configuration;
-        switch (configDto.getType()) {
-            case "Azure":
-                configuration = new AzureConfiguration( ModelMapperUtil.mapping( configDto.getConfig(), AzureConfiguration.class ) );
-                break;
-            case "LOCAL":
-                break;
-            case "AWS_S3":
-                configuration = new S3Configuration( ModelMapperUtil.mapping( configDto.getConfig(), S3Configuration.class ) );
-                break;
-        }
-
-        storageConfigDao.insert( storageConfig );
+//        TODO
+//
+//        StorageConfig storageConfig = ModelMapperUtil.mapping( configDto, StorageConfig.class );
+//        Log.info("Adding config");
+//        Log.info(storageConfig.toString());
+//        StorageConfiguration configuration;
+//        switch (configDto.getType()) {
+//            case "Azure":
+//                configuration = new AzureConfiguration( ModelMapperUtil.mapping( configDto.getConfig(), AzureConfiguration.class ) );
+//                break;
+//            case "LOCAL":
+//                break;
+//            case "AWS_S3":
+//                configuration = new S3Configuration( ModelMapperUtil.mapping( configDto.getConfig(), S3Configuration.class ) );
+//                break;
+//        }
+//
+//        storageConfigDao.insert( storageConfig );
     }
 
     @Override

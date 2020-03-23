@@ -23,6 +23,5 @@ VALUES
 INSERT INTO
 `t_source` (`name`, `type`, `config`)
 VALUES
-('myS3_1', 'AWS_S3', 's3_token1'),
-('myS3_2', 'AWS_S3', 's3_token1'),
-('myAzure_1', 'Azure', 'Azure_token1');
+('myS3', 'AWS_S3', 'S3_token'),
+('myAzure', 'Azure', 'Azure_token');

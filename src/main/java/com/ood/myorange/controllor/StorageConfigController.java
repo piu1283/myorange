@@ -11,61 +11,52 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Guancheng Lai on 3/19/20.
  */
 
 @RestController
 @Slf4j
+@RequestMapping("/Admin")
 public class StorageConfigController {
-    @Autowired
-    IAuthenticationFacade authenticationFacade; // authenticationFacade can be used to obtain the current login user
 
     @Autowired
     StorageConfigService storageConfigService;
 
-    @GetMapping("/view-configuration-list")
-    public BaseResponse viewStorageConfigList(
-            @RequestBody Integer adminId
-    ){
-        authenticationFacade.getAuthentication().getPrincipal();
-        storageConfigService.getAllConfigurations(adminId);
-        return BaseResponse.success();
+    @GetMapping("/config/storage")
+    public List<StorageConfigDto> viewAllStorageConfig(){
+        return storageConfigService.getAllConfigurations();
     }
 
-    @GetMapping("/view-storage-config/{id}")
+    @GetMapping("/config/storage/{configId}")
     public StorageConfigDto viewOneStorageConfig(
-            @PathVariable("id") int id
+            @PathVariable("configId") int configId
     ){
-        authenticationFacade.getAuthentication().getPrincipal();
-        StorageConfigDto result = storageConfigService.getConfiguration( id );
-        return result;
+        return storageConfigService.getConfiguration( configId );
     }
 
-    @PostMapping("/add-storage-config")
-    public BaseResponse addStorageConfig(
+    @PostMapping("/config/delete/add/{configId}")
+    public void addStorageConfig(
             @RequestBody StorageConfigDto storageConfigDto
     ){
-        authenticationFacade.getAuthentication().getPrincipal();
-        storageConfigService.addConfiguration( storageConfigDto );
-        return BaseResponse.success();
+        //TODO
     }
 
-    @PostMapping("/update-storage-config")
-    public BaseResponse updateStorageConfig(
+    @PostMapping("/config/storage/update/{configId}")
+    public void updateStorageConfig(
+            @PathVariable("configId") int configId,
             @RequestBody StorageConfigDto storageConfigDto
     ){
-        authenticationFacade.getAuthentication().getPrincipal();
-        storageConfigService.updateConfiguration( storageConfigDto );
-        return BaseResponse.success();
+        //TODO
     }
 
-    @PostMapping("/delete-storage-config")
-    public BaseResponse deleteStorageConfig(
+    @PostMapping("/config/storage/delete/{configId}")
+    public void deleteStorageConfig(
             @RequestBody int configId
     ){
-        storageConfigService.deleteConfiguration( configId );
-        authenticationFacade.getAuthentication().getPrincipal();
-        return BaseResponse.success();
+        //TODO
     }
 }

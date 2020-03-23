@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public interface StorageConfigService {
-    List<StorageConfigDto> getAllConfigurations(int adminId);
+    List<StorageConfigDto> getAllConfigurations();
     StorageConfigDto getConfiguration(int configId);
     void addConfiguration(StorageConfigDto queryDto);
     void updateConfiguration(StorageConfigDto queryDto);
