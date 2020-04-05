@@ -1,8 +1,13 @@
 package com.ood.myorange.pojo;
 
-import lombok.*;
 
-import javax.persistence.*;
+import com.ood.myorange.constant.enumeration.Gender;
+import lombok.Data;
+import lombok.ToString;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 import java.sql.Timestamp;
 
