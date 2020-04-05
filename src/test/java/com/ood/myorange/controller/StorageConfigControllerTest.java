@@ -1,0 +1,21 @@
+package com.ood.myorange.controller;
+
+
+import lombok.With;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/*
+ * Created by Guancheng Lai on 04/04/2020
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@Transactional
+@Rollback()
+public class StorageConfigControllerTest {
+
+
+}

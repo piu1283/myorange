@@ -1,17 +1,13 @@
 package com.ood.myorange.controllor;
 
-import com.ood.myorange.auth.IAuthenticationFacade;
-import com.ood.myorange.config.storage.S3Configuration;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ood.myorange.dto.StorageConfigDto;
-import com.ood.myorange.dto.response.BaseResponse;
+import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.StorageConfigService;
-import com.ood.myorange.service.impl.StorageConfigServiceImpl;
-import com.ood.myorange.util.ModelMapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,36 +23,73 @@ public class StorageConfigController {
     StorageConfigService storageConfigService;
 
     @GetMapping("/config/storage")
-    public List<StorageConfigDto> viewAllStorageConfig(){
+    public List<StorageConfigDto> viewAllStorageConfig() throws JsonProcessingException {
         return storageConfigService.getAllConfigurations();
     }
 
     @GetMapping("/config/storage/{configId}")
     public StorageConfigDto viewOneStorageConfig(
             @PathVariable("configId") int configId
-    ){
+    ) throws JsonProcessingException {
+        validateConfigId( configId );
         return storageConfigService.getConfiguration( configId );
     }
 
-    @PostMapping("/config/delete/add/{configId}")
+    @PostMapping("/config/storage/add")
     public void addStorageConfig(
             @RequestBody StorageConfigDto storageConfigDto
-    ){
-        //TODO
+    ) throws JsonProcessingException {
+        validateConfig( storageConfigDto );
+        storageConfigService.addConfiguration( storageConfigDto );
     }
 
-    @PostMapping("/config/storage/update/{configId}")
-    public void updateStorageConfig(
+    @PutMapping("/config/storage/edit/{configId}")
+    public void editStorageConfig(
             @PathVariable("configId") int configId,
             @RequestBody StorageConfigDto storageConfigDto
-    ){
-        //TODO
+    ) throws JsonProcessingException {
+        validateConfigId( configId );
+        validateConfig( storageConfigDto );
+        storageConfigService.updateConfiguration( configId, storageConfigDto );
     }
 
     @PostMapping("/config/storage/delete/{configId}")
     public void deleteStorageConfig(
-            @RequestBody int configId
+            @PathVariable int configId
     ){
-        //TODO
+        validateConfigId( configId );
+        storageConfigService.deleteConfiguration( configId );
+    }
+
+    void validateConfigId(int configId) {
+        if (configId <= 0) {
+            throw new InvalidRequestException("ConfigId should be greater than zero");
+        }
+    }
+
+    void validateConfig(StorageConfigDto storageConfigDto) {
+        switch (storageConfigDto.getType()) {
+            case "AWS" :
+                if (
+                        storageConfigDto.getAws_access_key_id() == null
+                                || storageConfigDto.getAws_secret_access_key() == null
+                                || storageConfigDto.getAws_region() == null
+                                || storageConfigDto.getAws_bucketName() == null
+                ) {
+                    throw new InvalidRequestException( "Incomplete AWS S3 configuration" );
+                }
+                break;
+            case "Azure" :
+                if (
+                        storageConfigDto.getAzure_token() == null
+                ) {
+                    throw new InvalidRequestException( "Incomplete Azure BlobStorage configuration" );
+                }
+                break;
+            case "LOCAL" :
+                break;
+            default:
+                throw new InvalidRequestException( "Invalid storage type" );
+        }
     }
 }

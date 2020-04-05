@@ -23,5 +23,13 @@ VALUES
 INSERT INTO
 `t_source` (`name`, `type`, `config`)
 VALUES
-('myS3', 'AWS_S3', 'S3_token'),
-('myAzure', 'Azure', 'Azure_token');
+(
+    'myS3',
+    'AWS',
+    '{"aws_access_key_id": "AKIAUIHAYCXR3OW55USA","aws_secret_access_key" : "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","region" : "us-east-2","bucket_name" : "my-bucket-glai-01"}'
+),
+(
+    'myAzure',
+    'Azure',
+    '{"azure_token" : "azureazure123456"}'
+);

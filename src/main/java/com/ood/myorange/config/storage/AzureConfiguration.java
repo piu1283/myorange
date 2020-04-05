@@ -1,21 +1,22 @@
 package com.ood.myorange.config.storage;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @Component
 @Data
 @ToString
+@Getter
+@Setter
+@AllArgsConstructor
 public class AzureConfiguration implements StorageConfiguration {
-    String key;
-    public AzureConfiguration() { key = ""; }
-    public AzureConfiguration(AzureConfiguration azureConfig) {
-        key = azureConfig.getKey();
+    private String azureToken;
+
+    public AzureConfiguration() {
+        azureToken = "Default";
     }
 
-    @Override
-    public String getAccessKey() {
-        return this.key;
+    public AzureConfiguration(AzureConfiguration azureConfig) {
+        azureToken = azureConfig.getAzureToken();
     }
 }
