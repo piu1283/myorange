@@ -1,4 +1,4 @@
-package com.ood.myorange.controllor;
+package com.ood.myorange.controller;
 
 import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.response.UserDto;
@@ -36,4 +36,5 @@ public class UserController {
     public List<UserDto> getAllUser() {
         return userService.getAllUser();
     }
+
 }

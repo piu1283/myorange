@@ -1,4 +1,4 @@
-package com.ood.myorange.controllor;
+package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.dto.DirsDto;
