@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Guancheng Lai on 3/19/20.
+ * Created by Guancheng Lai on 3/19/2020
  */
 public interface StorageConfigDao extends BaseDao<StorageConfig> {
     @Select( "SELECT * FROM `t_source` WHERE id=#{id}" )
@@ -31,7 +31,6 @@ public interface StorageConfigDao extends BaseDao<StorageConfig> {
     @Delete( "DELETE FORM `t_source` WHERE id = #{id}")
     void deleteSourceById(int id);
 
-    // Helper
     @Select( "SELECT COUNT(*) FROM `t_source` WHERE type=#{type}" )
     int countSourceByType(StorageConfiguration.StorageType type);
 }

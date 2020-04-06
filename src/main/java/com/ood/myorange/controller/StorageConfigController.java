@@ -1,4 +1,4 @@
-package com.ood.myorange.controllor;
+package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ood.myorange.dto.StorageConfigDto;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Created by Guancheng Lai on 3/19/20.
+ * Created by Guancheng Lai on 3/19/2020
  */
 
 @RestController
 @Slf4j
-@RequestMapping("/Admin")
+@RequestMapping("/admin")
 public class StorageConfigController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class StorageConfigController {
         return storageConfigService.getConfiguration( configId );
     }
 
-    @PostMapping("/config/storage/add")
+    @PostMapping("/config/storage")
     public void addStorageConfig(
             @RequestBody StorageConfigDto storageConfigDto
     ) throws JsonProcessingException {
@@ -43,17 +43,15 @@ public class StorageConfigController {
         storageConfigService.addConfiguration( storageConfigDto );
     }
 
-    @PutMapping("/config/storage/edit/{configId}")
+    @PutMapping("/config/storage")
     public void editStorageConfig(
-            @PathVariable("configId") int configId,
             @RequestBody StorageConfigDto storageConfigDto
     ) throws JsonProcessingException {
-        validateConfigId( configId );
         validateConfig( storageConfigDto );
-        storageConfigService.updateConfiguration( configId, storageConfigDto );
+        storageConfigService.updateConfiguration(storageConfigDto );
     }
 
-    @PostMapping("/config/storage/delete/{configId}")
+    @DeleteMapping("/config/storage/{configId}")
     public void deleteStorageConfig(
             @PathVariable int configId
     ){
@@ -71,17 +69,22 @@ public class StorageConfigController {
         switch (storageConfigDto.getType()) {
             case "AWS" :
                 if (
-                        storageConfigDto.getAws_access_key_id() == null
-                                || storageConfigDto.getAws_secret_access_key() == null
-                                || storageConfigDto.getAws_region() == null
-                                || storageConfigDto.getAws_bucketName() == null
+                        storageConfigDto.getAwsAccessKeyId() == null
+                                || storageConfigDto.getAwsSecretAccessKey() == null
+                                || storageConfigDto.getAwsRegion() == null
+                                || storageConfigDto.getAwsBucketName() == null
                 ) {
-                    throw new InvalidRequestException( "Incomplete AWS S3 configuration" );
+                    throw new InvalidRequestException( "Incomplete AWS S3 configuration"
+                            + ", key_id : " + storageConfigDto.getAwsAccessKeyId()
+                            + ", access_key : " + storageConfigDto.getAwsSecretAccessKey()
+                            + ", region : " + storageConfigDto.getAwsRegion()
+                            + ", bucket : " + storageConfigDto.getAwsBucketName()
+                    );
                 }
                 break;
             case "Azure" :
                 if (
-                        storageConfigDto.getAzure_token() == null
+                        storageConfigDto.getAzureToken() == null
                 ) {
                     throw new InvalidRequestException( "Incomplete Azure BlobStorage configuration" );
                 }
@@ -92,4 +95,5 @@ public class StorageConfigController {
                 throw new InvalidRequestException( "Invalid storage type" );
         }
     }
+
 }

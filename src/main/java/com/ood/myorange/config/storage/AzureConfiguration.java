@@ -3,6 +3,9 @@ package com.ood.myorange.config.storage;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+/**
+ * Created by Guancheng Lai
+ */
 @Component
 @Data
 @ToString

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.sql.Timestamp;
 
 /**
- * Created by Guancheng Lai on 3/19/20.
+ * Created by Guancheng Lai on 3/19/2020
  */
 
 @Data

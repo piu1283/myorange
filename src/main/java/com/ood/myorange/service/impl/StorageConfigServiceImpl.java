@@ -16,11 +16,13 @@ import com.ood.myorange.util.StorageConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Guancheng Lai on 03/19/2020
+ */
 @Service
 @Repository
 public class StorageConfigServiceImpl implements StorageConfigService {
@@ -61,16 +63,28 @@ public class StorageConfigServiceImpl implements StorageConfigService {
     }
 
     @Override
-    public void updateConfiguration(int configId, StorageConfigDto configDto) throws JsonProcessingException {
-
-        StorageConfig queryExistConfig = storageConfigDao.selectByPrimaryKey( configId );
-        if (queryExistConfig == null) {
-            throw new ResourceNotFoundException( "Storage #" + configId + " not found, failed to edit config" );
+    public void updateConfiguration(StorageConfigDto configDto) throws JsonProcessingException {
+        StorageConfiguration.StorageType type;
+        switch (configDto.getType()) {
+            case "AWS":
+                type = StorageConfiguration.StorageType.AWS;
+                break;
+            case "Azure":
+                type = StorageConfiguration.StorageType.Azure;
+                break;
+            case "LOCAL":
+                type = StorageConfiguration.StorageType.LOCAL;
+                break;
+            default:
+                throw new ResourceNotFoundException( "Invalid storage type" );
         }
 
-        if (!queryExistConfig.getType().toString().equals( configDto.getType() ) ) {
-            throw new InvalidRequestException("Storage type not match");
-        }
+//        StorageConfig queryExistConfig = storageConfigDao.SelectSourceByType( type );
+//        if (queryExistConfig == null) {
+//            throw new ResourceNotFoundException( "Storage name:" + configDto.getName()
+//                    + ", type:" + configDto.getType()
+//                    + " not found, failed to edit config" );
+//        }
 
         InsertOrUpdateConfiguration( configDto );
 
@@ -95,7 +109,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         StorageConfig configToUpdate = ModelMapperUtil.mapping( configDto,StorageConfig.class );
         switch (configDto.getType()) {
             case "AWS":
-                S3Configuration s3Configuration = configDto.getAWSConfiguration();
+                S3Configuration s3Configuration = configDto.getAwsConfiguration();
                 if (StorageConfigUtil.validateS3( s3Configuration )) {
 
                     // Setting up Pojo
@@ -158,7 +172,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         switch (configDto.getType()) {
             case "AWS":
                 updatedConfig.setType( StorageConfiguration.StorageType.AWS );
-                updatedConfig.setConfig( objectMapper.writeValueAsString( configDto.getAWSConfiguration() ) );
+                updatedConfig.setConfig( objectMapper.writeValueAsString( configDto.getAwsConfiguration() ) );
                 break;
             case "Azure":
                 updatedConfig.setType( StorageConfiguration.StorageType.Azure );

@@ -18,7 +18,9 @@ import com.ood.myorange.config.storage.AzureConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageConfiguration;
 import com.ood.myorange.dao.StorageConfigDao;
+import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.pojo.StorageConfig;
+import com.ood.myorange.service.StorageConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,11 +31,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Created by Guancheng Lai
+ */
 @Component
 @Slf4j
 public class StorageConfigUtil {
+
     @Autowired
-    StorageConfigDao storageConfigDao;
+    StorageConfigService storageConfigService;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -43,12 +49,13 @@ public class StorageConfigUtil {
     @PostConstruct
     public void init() throws JsonProcessingException {
         log.info( "Start Initializing the StorageConfigUtil..." );
-        List<StorageConfig> query = storageConfigDao.selectAll();
-        for (StorageConfig cfg : query) {
+
+        List<StorageConfigDto> query = storageConfigService.getAllConfigurations();
+        for (StorageConfigDto cfg : query) {
             int configId = cfg.getId();
             switch (cfg.getType()) {
-                case AWS:
-                    S3Configuration s3Configuration =  objectMapper.readValue( cfg.getConfig(),S3Configuration.class );
+                case "AWS":
+                    S3Configuration s3Configuration =  cfg.getAwsConfiguration();//objectMapper.readValue( cfg.get,S3Configuration.class );
                     //if (validateS3( s3Configuration ) ){
                     if ( true ){
                         configurationHashMap.put( StorageConfiguration.StorageType.AWS,s3Configuration );
@@ -59,8 +66,8 @@ public class StorageConfigUtil {
                     }
                     break;
 
-                case Azure:
-                    AzureConfiguration azureConfiguration = new AzureConfiguration( ModelMapperUtil.mapping( cfg.getConfig(),AzureConfiguration.class ) );
+                case "Azure":
+                    AzureConfiguration azureConfiguration = cfg.getAzureConfiguration();//new AzureConfiguration( ModelMapperUtil.mapping( cfg.getConfig(),AzureConfiguration.class ) );
                     if (validateAzure( azureConfiguration ) ){
                         configurationHashMap.put( StorageConfiguration.StorageType.Azure,azureConfiguration );
                     }
@@ -85,6 +92,10 @@ public class StorageConfigUtil {
     }
 
     public static boolean validateS3(S3Configuration config) {
+        return true;
+
+        // Uncomment this chunk of code for production
+        /*
         String access_key_id = config.getAws_access_key_id();
         String secret_key_id = config.getAws_secret_access_key();
         Regions clientRegion = Regions.fromName( config.getRegion() );
@@ -134,6 +145,7 @@ public class StorageConfigUtil {
         }
 
         return true;
+        */
     }
 
     public static void putStorageConfiguration(StorageConfiguration.StorageType type, StorageConfiguration storageConfiguration) {
