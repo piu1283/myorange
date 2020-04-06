@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CurrentAccount implements ICurrentAccount {
+public class AuthenticationFacade implements IAuthenticationFacade {
 
     @Override
     public UserInfo getUserInfo() {

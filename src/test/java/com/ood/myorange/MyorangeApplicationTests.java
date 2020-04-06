@@ -13,12 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 
 import java.util.List;
 
 @SpringBootTest
-class MyorangeApplicationTests extends AbstractTransactionalJUnit4SpringContextTests {
+class MyorangeApplicationTests {
 
 	@Autowired
 	UserDao userDao;

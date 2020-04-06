@@ -16,7 +16,7 @@ import java.util.Date;
 public class BaseResponse {
     private String msg;
     private Object resultData;
-    private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    private Timestamp timestamp = new Timestamp(new Date().getTime());
 
     private BaseResponse(String msg, Object data) {
         this.msg = msg;

@@ -21,8 +21,6 @@ public class UserInfo implements UserDetails {
     private int sourceId;
     @JsonIgnore
     private boolean blocked;
-    private int rootPathId = 0;
-
     private List<SimpleGrantedAuthority> authorities;
 
     @Override
@@ -37,7 +35,7 @@ public class UserInfo implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !blocked;
+        return true;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ood.myorange.controller;
+package com.ood.myorange.controllor;
 
 import com.ood.myorange.dto.response.UserDto;
 import com.ood.myorange.exception.ResourceNotFoundException;

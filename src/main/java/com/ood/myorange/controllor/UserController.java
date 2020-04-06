@@ -1,6 +1,6 @@
-package com.ood.myorange.controller;
+package com.ood.myorange.controllor;
 
-import com.ood.myorange.auth.ICurrentAccount;
+import com.ood.myorange.auth.IAuthenticationFacade;
 import com.ood.myorange.dto.response.UserDto;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.service.UserService;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    ICurrentAccount currentAccount; // authenticationFacade can be used to obtain the current login user
+    IAuthenticationFacade authenticationFacade; // authenticationFacade can be used to obtain the current login user
 
     @Autowired
     UserService userService;
@@ -28,7 +29,7 @@ public class UserController {
     public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
         log.info("this is a test log");
         // this line can get the user detail in the context
-        System.out.println(currentAccount.getUserInfo());
+        System.out.println(authenticationFacade.getUserInfo());
         throw new ResourceNotFoundException("file you want is not there.");
     }
 
@@ -36,5 +37,4 @@ public class UserController {
     public List<UserDto> getAllUser() {
         return userService.getAllUser();
     }
-
 }
