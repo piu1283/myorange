@@ -49,7 +49,8 @@ public class StorageConfigUtil {
             switch (cfg.getType()) {
                 case AWS:
                     S3Configuration s3Configuration =  objectMapper.readValue( cfg.getConfig(),S3Configuration.class );
-                    if (validateS3( s3Configuration ) ){
+                    //if (validateS3( s3Configuration ) ){
+                    if ( true ){
                         configurationHashMap.put( StorageConfiguration.StorageType.AWS,s3Configuration );
                     }
                     else {
@@ -84,7 +85,6 @@ public class StorageConfigUtil {
     }
 
     public static boolean validateS3(S3Configuration config) {
-
         String access_key_id = config.getAws_access_key_id();
         String secret_key_id = config.getAws_secret_access_key();
         Regions clientRegion = Regions.fromName( config.getRegion() );
@@ -104,13 +104,13 @@ public class StorageConfigUtil {
             S3Object myFile = s3Client.getObject( bucketName, validationFileName );
             DeleteObjectsRequest request = new DeleteObjectsRequest(bucketName);
 
-            /* Create delete request */
+            // Create delete request
             request.setKeys( Arrays.asList( new DeleteObjectsRequest.KeyVersion("validation.txt") ));
 
-            /* Send Delete Objects Request */
+            // Send Delete Objects Request
             DeleteObjectsResult result = s3Client.deleteObjects(request);
 
-            /* Printing Deleted Object Keys */
+            // Printing Deleted Object Keys
             if (result.getDeletedObjects() != null) {
 //                result.getDeletedObjects().stream().forEach(e -> System.out.println(e.getKey()));
                 log.info("Successfully validate the AWS S3 Credential, the upload and download functionality seems to be working correctly.");

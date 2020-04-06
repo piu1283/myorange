@@ -64,6 +64,10 @@ public class StorageConfigServiceImpl implements StorageConfigService {
     public void updateConfiguration(int configId, StorageConfigDto configDto) throws JsonProcessingException {
 
         StorageConfig queryExistConfig = storageConfigDao.selectByPrimaryKey( configId );
+        if (queryExistConfig == null) {
+            throw new ResourceNotFoundException( "Storage #" + configId + " not found, failed to edit config" );
+        }
+
         if (!queryExistConfig.getType().toString().equals( configDto.getType() ) ) {
             throw new InvalidRequestException("Storage type not match");
         }
