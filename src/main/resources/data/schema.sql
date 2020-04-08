@@ -74,7 +74,9 @@ CREATE TABLE `t_share` (
 	`download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
     `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key',
-    `share_url` VARCHAR(225) NOT NULL COMMENT 'share url of front end'
+    `share_url` VARCHAR(225) NOT NULL COMMENT 'share url of front end',
+    UNIQUE KEY `share_unique` (`user_id`,`file_id`),
+    UNIQUE KEY `share_key_unique` (`share_key`)
 ) COMMENT 'share table';
 
 DROP TABLE IF EXISTS `user_file`;
@@ -83,14 +85,16 @@ CREATE TABLE `user_file` (
     `user_id` INT(11) NOT NULL COMMENT 'user_id',
     `dir_id` INT(11) NOT NULL COMMENT 'id of the dir it belongs to',
     `origin_id`INT(11) NOT NULL COMMENT 'origin_file_id',
+    `file_size` BIGINT(20) UNSIGNED NOT NULL COMMENT 'file_size in byte',
     `file_name` VARCHAR(255) NOT NULL COMMENT 'file_name',
     `file_type` ENUM ('DOCUMENT','AUDIO','VIDEO','IMG') NOT NULL DEFAULT 'DOCUMENT' COMMENT 'file type',
     `suffixes` varchar(10) NOT NULL DEFAULT 'txt' COMMENT 'file suffixes when it first upload',
-    `file_status` ENUM ('NORMAL','DELETED','SHARED') NOT NULL DEFAULT 'NORMAL' COMMENT 'file_status [normal,delete, shared]',
+    `file_status` ENUM ('NORMAL','SHARED') NOT NULL DEFAULT 'NORMAL' COMMENT 'file_status [normal, shared]',
+    `deleted` boolean NOT NULL DEFAULT false COMMENT 'is_delete',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
-    `deleted` boolean DEFAULT false COMMENT 'file is delete or not',
-    `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time'
+    `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time',
+    UNIQUE KEY `file_unique` (`dir_id`,`file_name`,`suffixes`,`user_id`)
 ) COMMENT 'user file table';
 
 DROP TABLE IF EXISTS `user_dir`;
@@ -98,10 +102,11 @@ CREATE TABLE `user_dir` (
     `dir_id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
     `user_id` INT(11) NOT NULL COMMENT 'user_id',
     `parent_id` INT(11)  NOT NULL COMMENT 'dir path',
-    `name` VARCHAR(50) NOT NULL COMMENT 'dir name',
+    `dir_name` VARCHAR(50) NOT NULL COMMENT 'dir name',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
     `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time',
 	`deleted` boolean NOT NULL DEFAULT false COMMENT 'is_delete',
-	`default` boolean NOT NULL DEFAULT false COMMENT 'default, every user will have an default dir called root'
+	`default_dir` boolean NOT NULL DEFAULT false COMMENT 'default, every user will have an default dir called root',
+	UNIQUE KEY `dir_unique` (`dir_name`,`parent_id`,`user_id`)
 ) COMMENT 'user dir table';
