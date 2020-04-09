@@ -12,7 +12,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @PropertySource("classpath:application.yml")
 public class MyorangeApplication implements WebMvcConfigurer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MyorangeApplication.class, args);
-	}
+	public static void main(String[] args) {SpringApplication.run(MyorangeApplication.class, args); }
 }

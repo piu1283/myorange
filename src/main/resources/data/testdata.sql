@@ -48,5 +48,17 @@ VALUES
 -- id start with 7
 (2, 0, "/", true),(2, 7, "level_1a", false),(2, 7, "level_1b", false), (2, 7, "level_2a", false);
 
-
-
+-- source
+INSERT INTO
+`t_source` (`name`, `type`, `config`)
+VALUES
+(
+    'myS3',
+    'AWS',
+    '{"aws_access_key_id": "keyid1","aws_secret_access_key" : "accesskey1","region" : "us-east-2","bucket_name" : "my-bucket-glai-01"}'
+),
+(
+    'myAzure',
+    'AZURE',
+    '{"azure_token" : "azureazure123456"}'
+);

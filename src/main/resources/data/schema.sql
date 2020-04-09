@@ -33,7 +33,7 @@ DROP TABLE IF EXISTS `t_source`;
 CREATE TABLE `t_source` (
   `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
   `name` varchar(20) NOT NULL COMMENT 'name, like s3',
-  `type` enum('LOCAL', 'AWS_S3', 'Azure') NOT NULL COMMENT 'storage type',
+  `type` enum('LOCAL', 'AWS', 'AZURE') NOT NULL COMMENT 'storage type',
   `config` TEXT NOT NULL COMMENT 'json config string',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time',
