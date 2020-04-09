@@ -59,6 +59,6 @@ VALUES
 ),
 (
     'myAzure',
-    'Azure',
+    'AZURE',
     '{"azure_token" : "azureazure123456"}'
 );

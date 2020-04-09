@@ -9,14 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @ToString
-@Getter
-@Setter
-@AllArgsConstructor
 public class AzureConfiguration implements StorageConfiguration {
     private String azureToken;
 
     public AzureConfiguration() {
         azureToken = "Default";
+    }
+
+    public AzureConfiguration(String token) {
+        azureToken = token;
     }
 
     public AzureConfiguration(AzureConfiguration azureConfig) {

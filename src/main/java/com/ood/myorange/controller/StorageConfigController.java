@@ -82,7 +82,7 @@ public class StorageConfigController {
                     );
                 }
                 break;
-            case "Azure" :
+            case "AZURE" :
                 if (
                         storageConfigDto.getAzureToken() == null
                 ) {

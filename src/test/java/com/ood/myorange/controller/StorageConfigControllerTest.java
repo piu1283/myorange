@@ -74,7 +74,7 @@ public class StorageConfigControllerTest {
         mockMvc.perform( request ).andExpect( status().isOk() )
                 .andExpect( jsonPath("$.result_data.id", is(2) ))
                 .andExpect( jsonPath("$.result_data.name", is("myAzure") ))
-                .andExpect( jsonPath("$.result_data.type", is("Azure") ))
+                .andExpect( jsonPath("$.result_data.type", is("AZURE") ))
                 .andExpect( jsonPath("$.result_data.azure_token", is("azureazure123456") ))
                 .andDo( print() );
     }
@@ -160,7 +160,7 @@ public class StorageConfigControllerTest {
 
         storageConfigRequest = new StorageConfigDto();
         storageConfigRequest.setName( "myAzure2.0" );
-        storageConfigRequest.setType( "Azure" );
+        storageConfigRequest.setType( "AZURE" );
         storageConfigRequest.setAzureToken( "azure_token_2.0" );
 
         request = MockMvcRequestBuilders.put("/admin/config/storage")
@@ -174,7 +174,7 @@ public class StorageConfigControllerTest {
         mockMvc.perform( request ).andExpect( status().isOk() )
                 .andExpect( jsonPath("$.result_data.id", is(2) ))
                 .andExpect( jsonPath("$.result_data.name", is("myAzure2.0") ))
-                .andExpect( jsonPath("$.result_data.type", is("Azure") ))
+                .andExpect( jsonPath("$.result_data.type", is("AZURE") ))
                 .andExpect( jsonPath("$.result_data.azure_token", is("azure_token_2.0") ))
                 .andDo( print() );
     }
@@ -223,7 +223,7 @@ public class StorageConfigControllerTest {
                 .andExpect( jsonPath("$.result_data[0].aws_bucket_name", is("my-bucket-glai-01") ))
                 .andExpect( jsonPath("$.result_data[1].id", is(2) ))
                 .andExpect( jsonPath("$.result_data[1].name", is("myAzure") ))
-                .andExpect( jsonPath("$.result_data[1].type", is("Azure") ))
+                .andExpect( jsonPath("$.result_data[1].type", is("AZURE") ))
                 .andExpect( jsonPath("$.result_data[1].azure_token", is("azureazure123456") ))
                 .andDo( print() );
     }

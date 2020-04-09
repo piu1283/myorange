@@ -5,7 +5,6 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.fms.model.InternalErrorException;
 import com.amazonaws.services.fms.model.ResourceNotFoundException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -17,9 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.config.storage.AzureConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageConfiguration;
-import com.ood.myorange.dao.StorageConfigDao;
+import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dto.StorageConfigDto;
-import com.ood.myorange.pojo.StorageConfig;
 import com.ood.myorange.service.StorageConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 
 /**
  * Created by Guancheng Lai
@@ -44,7 +43,7 @@ public class StorageConfigUtil {
     @Autowired
     ObjectMapper objectMapper;
 
-    public static HashMap<StorageConfiguration.StorageType, StorageConfiguration> configurationHashMap = new HashMap<>();
+    public static HashMap<StorageType, StorageConfiguration> configurationHashMap = new HashMap<>();
 
     @PostConstruct
     public void init() throws JsonProcessingException {
@@ -55,26 +54,13 @@ public class StorageConfigUtil {
             int configId = cfg.getId();
             switch (cfg.getType()) {
                 case "AWS":
-                    S3Configuration s3Configuration =  cfg.getAwsConfiguration();//objectMapper.readValue( cfg.get,S3Configuration.class );
-                    //if (validateS3( s3Configuration ) ){
-                    if ( true ){
-                        configurationHashMap.put( StorageConfiguration.StorageType.AWS,s3Configuration );
-                    }
-                    else {
-                        throw new InternalErrorException( "Having trouble to validate the provided AWS S3 Configuration, " +
-                                "configId:" + configId + "configName: " + cfg.getName());
-                    }
+                    S3Configuration s3Configuration =  cfg.getAwsConfiguration();
+                    configurationHashMap.put( StorageType.AWS,s3Configuration );
                     break;
 
-                case "Azure":
-                    AzureConfiguration azureConfiguration = cfg.getAzureConfiguration();//new AzureConfiguration( ModelMapperUtil.mapping( cfg.getConfig(),AzureConfiguration.class ) );
-                    if (validateAzure( azureConfiguration ) ){
-                        configurationHashMap.put( StorageConfiguration.StorageType.Azure,azureConfiguration );
-                    }
-                    else {
-                        throw new InternalErrorException( "Having trouble to validate the provided Azure Configuration, " +
-                                "configId:" + configId + "configName: " + cfg.getName());
-                    }
+                case "AZURE":
+                    AzureConfiguration azureConfiguration = cfg.getAzureConfiguration();
+                    configurationHashMap.put( StorageType.AZURE,azureConfiguration );
                     break;
 
                 default:
@@ -92,12 +78,9 @@ public class StorageConfigUtil {
     }
 
     public static boolean validateS3(S3Configuration config) {
-        return true;
 
-        // Uncomment this chunk of code for production
-        /*
-        String access_key_id = config.getAws_access_key_id();
-        String secret_key_id = config.getAws_secret_access_key();
+        String access_key_id = config.getAwsAccessKeyId();
+        String secret_key_id = config.getAwsSecretAccessKey();
         Regions clientRegion = Regions.fromName( config.getRegion() );
         String bucketName = config.getBucketName();
         try {
@@ -145,18 +128,17 @@ public class StorageConfigUtil {
         }
 
         return true;
-        */
     }
 
-    public static void putStorageConfiguration(StorageConfiguration.StorageType type, StorageConfiguration storageConfiguration) {
+    public static void putStorageConfiguration(StorageType type, StorageConfiguration storageConfiguration) {
         configurationHashMap.put( type,storageConfiguration );
     }
 
-    public static void eraseStorageConfiguration(StorageConfiguration.StorageType type) {
+    public static void eraseStorageConfiguration(StorageType type) {
         configurationHashMap.remove( type );
     }
 
-    public static  StorageConfiguration getStorageConfiguration(StorageConfiguration.StorageType type) {
+    public static  StorageConfiguration getStorageConfiguration(StorageType type) {
         if (!configurationHashMap.containsKey( type )) {
             throw new ResourceNotFoundException( "Cannot find config by the configId: " + type );
         }

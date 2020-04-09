@@ -3,6 +3,8 @@ package com.ood.myorange.dto;
 import com.ood.myorange.config.storage.AzureConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
@@ -28,11 +30,11 @@ public class StorageConfigDto {
     private Timestamp modifyTime;
     private boolean currentUse;
 
-    public void setAWS(S3Configuration inConfig) {
-        this.awsAccessKeyId = inConfig.getAws_access_key_id();
-        this.awsSecretAccessKey = inConfig.getAws_secret_access_key();
-        this.awsRegion = inConfig.getRegion();
-        this.awsBucketName = inConfig.getBucketName();
+    public void setAWS(S3Configuration config) {
+        this.awsAccessKeyId = config.getAwsAccessKeyId();
+        this.awsSecretAccessKey = config.getAwsSecretAccessKey();
+        this.awsRegion = config.getRegion();
+        this.awsBucketName = config.getBucketName();
     }
 
     public S3Configuration getAwsConfiguration() {
@@ -44,8 +46,8 @@ public class StorageConfigDto {
         );
     }
 
-    public void setAzure(AzureConfiguration inConfig) {
-        this.azureToken = inConfig.getAzureToken();
+    public void setAzure(AzureConfiguration config) {
+        this.azureToken = config.getAzureToken();
     }
 
     public AzureConfiguration getAzureConfiguration() {
