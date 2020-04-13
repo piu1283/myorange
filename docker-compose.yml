@@ -12,12 +12,13 @@ services:
       - cache
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_test?serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 123123
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "123123123"
     networks:
       - backend
   db:
     image: mysql:latest
+    restart: always
     volumes:
       - ./volumes/db_data:/data
     command: --init-file /data/init.sql
@@ -34,58 +35,8 @@ services:
       - backend
   cache:
     image: redis
+    restart: always
     ports:
       - "6379:6379"
     networks:
       - backend
-
-#version: '3.7'
-#
-##  定义服务
-#services:
-#  # spring-boot服务
-#  app-server:
-#    build:
-#      context: . # 配置需要构建Dockerfile的路径 相对于docker-compose.yml
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8081:8081" # 将本机8080端口映射到容器8080端口
-##    restart: always
-#    depends_on:
-#      - db # 需要依赖的服务 率先构建
-#      - redis
-#    environment: # 设置环境变量
-#      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_test?serverTimezone=UTC
-#      SPRING_DATASOURCE_USERNAME: root
-#      SPRING_DATASOURCE_PASSWORD: 123123123
-#      SPRING_REDIS.HOST: redis
-#    networks: # 网络 连接mysql和redis
-#      - backend
-#  db:
-#    image: mysql:latest
-#    ports:
-#      - "3306:3306"
-##    restart: always
-#    environment:
-#      MYSQL_DATABASE: "db_test"
-#      MYSQL_USER: "zlk"
-#      MYSQL_PASSWORD: "123123123"
-#      MYSQL_ROOT_PASSWORD: "123123123"
-#    volumes:
-#      - db-data:/var/lib/mysql
-#    command: --init-file init.sql
-#    networks:
-#      - backend
-#  redis:
-#    image: redis
-##    command: [ "redis-server", "--protected-mode", "no" ]
-#    hostname:
-#      redis
-#    ports:
-#      - "6379:6379"
-#    networks:
-#      - backend
-#volumes:
-#  db-data:
-#networks:
-#  backend:
