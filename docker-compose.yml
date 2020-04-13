@@ -2,20 +2,20 @@ version: '3.7'
 networks:
   backend:
 services:
-  app:
-    build: ./
-    container_name: docker-spring-boot
-    ports:
-      - "8081:8080"
-    depends_on:
-      - db
-      - cache
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_test?serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: "root"
-      SPRING_DATASOURCE_PASSWORD: "123123123"
-    networks:
-      - backend
+#  app:
+#    build: ./
+#    container_name: docker-spring-boot
+#    ports:
+#      - "8081:8080"
+#    depends_on:
+#      - db
+#      - cache
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_test?serverTimezone=UTC
+#      SPRING_DATASOURCE_USERNAME: "root"
+#      SPRING_DATASOURCE_PASSWORD: "123123123"
+#    networks:
+#      - backend
   db:
     image: mysql:latest
     restart: always
