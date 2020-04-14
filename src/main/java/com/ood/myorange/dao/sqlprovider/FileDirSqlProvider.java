@@ -6,6 +6,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Chen on 3/29/20.
@@ -82,22 +83,50 @@ public class FileDirSqlProvider {
                 .WHERE("user_dir.dir_id in (" + getAllChildDirIncludeItself(dirId) + " Select dir_id from " + TEMP_RESULT_TABLE_NAME + ")");
         return sql.toString();
     }
-
     public String deleteFilesUnderDirAndItsChildrenByUpdate(int dirId) {
         SQL sql = new SQL();
-        sql.UPDATE("user_file")
-                .SET("deleted=true")
-                .SET("delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
-                .WHERE("user_file.dir_id in (" + getAllChildDirIncludeItself(dirId) + " Select dir_id from " + TEMP_RESULT_TABLE_NAME + ")");
+        sql.UPDATE("user_file AS u, t_user AS t")
+                .SET("u.deleted=true")
+                .SET("u.delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
+                .SET("t.used_size=IF((cast(t.used_size as signed)-cast(u.file_size as signed))>=0, t.used_size - u.file_size, 0)")
+                .WHERE("u.user_id=t.id")
+                .AND()
+                .WHERE("u.dir_id in (" + getAllChildDirIncludeItself(dirId) + " Select dir_id from " + TEMP_RESULT_TABLE_NAME + ")");
         return sql.toString();
     }
 
     public String deleteFile(int fileId) {
         SQL sql = new SQL();
+        sql.UPDATE("user_file AS u, t_user AS t")
+                .SET("u.deleted=true")
+                .SET("u.delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
+                .SET("t.used_size=IF((cast(t.used_size as signed)-cast(u.file_size as signed))>=0, t.used_size - u.file_size, 0)")
+                .WHERE("u.file_id=#{fileId}");
+        return sql.toString();
+    }
+
+    public String getAllFileIdUnderDir(int dirId){
+        SQL sql = new SQL();
+        sql.SELECT("u.file_id")
+                .FROM("user_file u LEFT JOIN "+TEMP_RESULT_TABLE_NAME+" t ON u.dir_id=t.dir_id");
+        return getAllChildDirIncludeItself(dirId) + sql.toString();
+    }
+
+    public String deleteFilesByFileIds(Map<String, Object> parameters) {
+        List<Integer> fileIds = (List<Integer>) parameters.get("fileIds");
+        SQL sql = new SQL();
         sql.UPDATE("user_file")
                 .SET("deleted=true")
                 .SET("delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
-                .WHERE("file_id=#{fileId}");
+                .WHERE("file_id in (" + StringUtils.join(fileIds, ",") + ")");
+        return sql.toString();
+    }
+
+    public String updateUsedSizeDecreaseByFileIds(List<Integer> fileIds, int userId) {
+        SQL sql = new SQL();
+        sql.UPDATE("t_user t, (SELECT SUM(file_size) size FROM user_file WHERE file_id in (" + StringUtils.join(fileIds, ",") + ")) u")
+                .SET("t.used_size = IF(cast(t.used_size as signed) - cast(u.size as signed)>=0, cast(t.used_size as signed) - cast(u.size as signed), 0)")
+                .WHERE("t.id=#{userId}");
         return sql.toString();
     }
 

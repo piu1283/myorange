@@ -2,11 +2,6 @@ package com.ood.myorange.constant.enumeration;
 
 import com.ood.myorange.exception.InvalidRequestException;
 import lombok.extern.slf4j.Slf4j;
-import sun.rmi.runtime.Log;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Chen on 3/29/20.

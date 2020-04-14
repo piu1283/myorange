@@ -42,7 +42,7 @@ public class FileStructureController {
     DirService dirService;
 
     @GetMapping(value = "/search")
-    public FileDirResponse getFileDirSearchResult(@RequestParam(value = "keyword") String keyword, @RequestParam(value = "type",required = false) String type) {
+    public FileDirResponse getFileDirSearchResult(@RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "type", required = false) String type) {
         if (StringUtils.isBlank(keyword) && StringUtils.isBlank(type)) {
             throw new InvalidRequestException("Invalid request params: both params cannot be empty at same time.", Arrays.asList("type", "keyword"));
         }

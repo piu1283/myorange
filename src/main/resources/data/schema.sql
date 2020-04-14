@@ -7,8 +7,8 @@ CREATE TABLE `t_user` (
   `email` varchar(50) NOT NULL COMMENT 'email should be unique',
   `gender` enum('M','F') NOT NULL COMMENT 'gender using enum',
   `password` varchar(100) NOT NULL COMMENT 'password, max for 20 char',
-  `memory_size` bigint UNSIGNED DEFAULT 1073741824 COMMENT 'total space default 1G',
-  `used_size` bigint UNSIGNED DEFAULT 0 COMMENT 'used space',
+  `memory_size` BIGINT(13) UNSIGNED DEFAULT 1073741824 COMMENT 'total space default 1G',
+  `used_size` BIGINT(13) UNSIGNED DEFAULT 0 COMMENT 'used space',
   `source_id` INT(11) NOT NULL DEFAULT 1 COMMENT 'upload source id',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `blocked` boolean NOT NULL DEFAULT false COMMENT 'is blocked or not, if yes, user cannot login'
@@ -50,14 +50,15 @@ CREATE TABLE `t_admin` (
 
 DROP TABLE IF EXISTS `origin_file`;
 CREATE TABLE `origin_file` (
-  `origin_file_id` varchar(70) PRIMARY KEY COMMENT 'origin_file_id',
+  `origin_id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
+  `origin_file_id` varchar(70) NOT NULL COMMENT 'origin_file_id',
   `file_md5` CHAR(32) NOT NULL COMMENT 'md5',
-  `file_size` BIGINT(20) UNSIGNED NOT NULL COMMENT 'file_size in byte',
-  `suffixes` varchar(10) NOT NULL DEFAULT 'txt' COMMENT 'file suffixes',
+  `file_size` BIGINT(10) UNSIGNED NOT NULL COMMENT 'file_size in byte',
   `file_count` SMALLINT UNSIGNED DEFAULT 1 COMMENT 'refer count',
   `source_id` INT(11) NOT NULL DEFAULT 1 COMMENT 'upload source id',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'time created',
-  `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time'
+  `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
+  UNIQUE KEY `origin_file_unique` (`origin_file_id`)
 ) COMMENT 'original file information table';
 
 
@@ -85,7 +86,7 @@ CREATE TABLE `user_file` (
     `user_id` INT(11) NOT NULL COMMENT 'user_id',
     `dir_id` INT(11) NOT NULL COMMENT 'id of the dir it belongs to',
     `origin_id`INT(11) NOT NULL COMMENT 'origin_file_id',
-    `file_size` BIGINT(20) UNSIGNED NOT NULL COMMENT 'file_size in byte',
+    `file_size` BIGINT(10) UNSIGNED NOT NULL COMMENT 'file_size in byte',
     `file_name` VARCHAR(255) NOT NULL COMMENT 'file_name',
     `file_type` ENUM ('DOCUMENT','AUDIO','VIDEO','IMG') NOT NULL DEFAULT 'DOCUMENT' COMMENT 'file type',
     `suffixes` varchar(10) NOT NULL DEFAULT 'txt' COMMENT 'file suffixes when it first upload',

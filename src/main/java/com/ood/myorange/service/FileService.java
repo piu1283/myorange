@@ -2,6 +2,7 @@ package com.ood.myorange.service;
 
 import com.ood.myorange.constant.enumeration.FileType;
 import com.ood.myorange.dto.FilesDto;
+import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.pojo.UserFile;
 
 import java.util.List;
@@ -67,4 +68,6 @@ public interface FileService {
     void deleteFileUnderDirAndItsChildren(int dirId);
 
     UserFile getUserFileById(int fileId);
+
+    OriginalFile getOriginalFileByFileId(int fileId);
 }
