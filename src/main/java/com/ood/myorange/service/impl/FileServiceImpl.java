@@ -2,16 +2,20 @@ package com.ood.myorange.service.impl;
 
 import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.constant.enumeration.FileType;
+import com.ood.myorange.dao.OriginalFileDao;
 import com.ood.myorange.dao.UserFileDao;
 import com.ood.myorange.dto.FilesDto;
 import com.ood.myorange.dto.UserInfo;
 import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.ResourceNotFoundException;
+import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.pojo.UserFile;
 import com.ood.myorange.service.FileService;
 import com.ood.myorange.util.SizeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,9 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
     @Autowired
     UserFileDao userFileDao;
+
+    @Autowired
+    OriginalFileDao originalFileDao;
 
     @Autowired
     ICurrentAccount currentAccount;
@@ -86,13 +93,22 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteFileUnderDirAndItsChildren(int dirId) {
-        userFileDao.deleteFilesUnderDirAndItsChildrenByUpdate(dirId);
+        int userId = currentAccount.getUserInfo().getId();
+        List<Integer> fileIds = userFileDao.getAllFileIdUnderDir(dirId);
+        userFileDao.deleteFilesByFileIds(fileIds);
+        userFileDao.updateUsedSizeDecreaseByFileIds(fileIds, userId);
     }
 
     @Override
     public UserFile getUserFileById(int fileId) {
         return userFileDao.selectByPrimaryKey(new UserFile(fileId));
+    }
+
+    @Override
+    public OriginalFile getOriginalFileByFileId(int fileId) {
+        return originalFileDao.getByFileId(fileId);
     }
 
 
