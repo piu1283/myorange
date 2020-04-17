@@ -70,13 +70,7 @@ VALUES("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA_3456324", "AAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC_23425", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 23425, 1, 1),
 ("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD_234", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 234, 1, 1);
 
-DROP TABLE IF EXISTS `sys_config`;
-CREATE TABLE `sys_config` (
-  `class_id` varchar(80) PRIMARY KEY COMMENT 'config class name',
-  `config` TEXT NOT NULL COMMENT 'json config string',
-  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-  `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time'
-) COMMENT 'system config';
+
 -- sysConfig for mail
 INSERT INTO `sys_config`(`class_id`,`config`)
 VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange098@gmail.com\",\"host\":\"smtp.gmail.com\",\"port\":465,\"password\":\"Myorange123\",\"sender\":\"mo\"}');
