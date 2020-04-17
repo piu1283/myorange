@@ -24,7 +24,6 @@ import java.util.List;
  * Created by Guancheng Lai on 03/19/2020
  */
 @Service
-@Repository
 public class StorageConfigServiceImpl implements StorageConfigService {
     @Autowired
     StorageConfigDao storageConfigDao;

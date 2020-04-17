@@ -30,8 +30,8 @@ INSERT INTO
 `user_file`(`user_id`,`dir_id`,`origin_id`,`file_size`,`file_name`,`file_type`,`suffixes`)
 VALUES
 (1, 1, 1, 3456324, "file_", 'DOCUMENT' , "txt"),
-(1, 2, 2, 83421, "file_1a_a", 'DOCUMENT' , "avi"),
-(1, 3, 2, 83421, "file_1b_a", 'DOCUMENT' , "avi"),
+(1, 2, 2, 83421, "file_1a_a", 'VIDEO' , "avi"),
+(1, 3, 2, 83421, "file_1b_a", 'VIDEO' , "avi"),
 (1, 4, 3, 23425, "file_2a_a", 'AUDIO', 'mp3'),
 (1, 4, 4, 234, "file_2a_b", 'AUDIO', 'mp3');
 
@@ -69,4 +69,15 @@ VALUES("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA_3456324", "AAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB_83421", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", 83421, 2, 1),
 ("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC_23425", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 23425, 1, 1),
 ("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD_234", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 234, 1, 1);
+
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `class_id` varchar(80) PRIMARY KEY COMMENT 'config class name',
+  `config` TEXT NOT NULL COMMENT 'json config string',
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time'
+) COMMENT 'system config';
+-- sysConfig for mail
+INSERT INTO `sys_config`(`class_id`,`config`)
+VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange098@gmail.com\",\"host\":\"smtp.gmail.com\",\"port\":465,\"password\":\"Myorange123\",\"sender\":\"mo\"}');
 

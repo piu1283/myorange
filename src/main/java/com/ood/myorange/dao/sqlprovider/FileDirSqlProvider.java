@@ -1,6 +1,7 @@
 package com.ood.myorange.dao.sqlprovider;
 
 import com.ood.myorange.constant.enumeration.FileType;
+import com.ood.myorange.pojo.OriginalFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -136,5 +137,12 @@ public class FileDirSqlProvider {
                 "(SELECT `dir_id`, `user_id`, `parent_id`, `dir_name` FROM `user_dir` WHERE `dir_id`=" + dirId + " \n" +
                 "union all \n" +
                 "SELECT A.`dir_id`, A.`user_id`, A.`parent_id`, A.`dir_name` FROM `user_dir` A, " + TEMP_RESULT_TABLE_NAME + " B WHERE A.`parent_id`=B.`dir_id`) \n";
+    }
+
+    public String insertOrUpdateOriginFile(OriginalFile originalFile) {
+        return "INSERT INTO `origin_file` (`origin_file_id`, `file_md5`, `file_size`,`file_count`,`source_id`)\n" +
+                "VALUES(#{originFileId},#{fileMd5},#{fileSize},#{fileCount},#{sourceId}) \n" +
+                "ON DUPLICATE KEY UPDATE\n" +
+                "`file_count`=`file_count`+1\n";
     }
 }
