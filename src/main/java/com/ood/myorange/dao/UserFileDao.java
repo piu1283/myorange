@@ -69,4 +69,7 @@ public interface UserFileDao extends BaseDao<UserFile> {
     @SelectProvider(type = FileDirSqlProvider.class, method = "getAllFileIdUnderDir")
     @ResultType(Integer.class)
     List<Integer> getAllFileIdUnderDir(int dirId);
+
+    @Select("SELECT * FROM user_file WHERE `file_name`=#{name} AND `suffixes`=#{suffixes} AND `dir_id`=#{dirId}")
+    UserFile getUserFileByNameAndSuffixesAndDirId(String name, String suffixes, int dirId);
 }

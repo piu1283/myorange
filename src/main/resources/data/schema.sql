@@ -38,7 +38,15 @@ CREATE TABLE `t_source` (
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time',
   `current_use` boolean NOT NULL DEFAULT TRUE COMMENT 'this storage source is using or not'
-) COMMENT 'admin information table';
+) COMMENT 'third-party config';
+
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `class_id` varchar(80) PRIMARY KEY COMMENT 'config class name',
+  `config` TEXT NOT NULL COMMENT 'json config string',
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time'
+) COMMENT 'system config';
 
 DROP TABLE IF EXISTS `t_admin`;
 CREATE TABLE `t_admin` (
@@ -58,7 +66,7 @@ CREATE TABLE `origin_file` (
   `source_id` INT(11) NOT NULL DEFAULT 1 COMMENT 'upload source id',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'time created',
   `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
-  UNIQUE KEY `origin_file_unique` (`origin_file_id`)
+  UNIQUE KEY `origin_file_unique` (`origin_file_id`,`source_id`)
 ) COMMENT 'original file information table';
 
 

@@ -30,7 +30,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class OriginalFile {
     @Id
-    @Column(name = "origin_file_id")
+    @Column(name = "origin_id")
+    private Integer originId;
     private String originFileId;
     private String fileMd5;
     private Long fileSize;
