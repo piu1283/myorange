@@ -123,6 +123,7 @@ public class FileServiceImpl implements FileService {
         String[] splitRes = NamingUtil.splitFileName(fullName);
         String fileName = splitRes[0];
         String suffixes = splitRes[1];
+        int userId = currentAccount.getUserInfo().getId();
         UserFile userFile = userFileDao.getUserFileByNameAndSuffixesAndDirId(splitRes[0], splitRes[1], uploadDto.getDirId());
         int fileId = 0;
         // if file exist
@@ -145,8 +146,12 @@ public class FileServiceImpl implements FileService {
             userFile.setFileName(fileName);
             userFile.setSuffixes(suffixes);
             userFile.setDirId(uploadDto.getDirId());
+            userFile.setUserId(userId);
+            userFile.setOriginId(originId);
+            userFile.setFileSize( uploadDto.getSize() );
             userFile.setFileType(FileTypeUtil.getFileTypeBySuffixes(suffixes));
-            fileId = userFileDao.insertUseGeneratedKeys(userFile);
+            userFileDao.insertSelective(userFile);
+            fileId = userFile.getFileId();
         }
         return fileId;
     }
@@ -166,7 +171,7 @@ public class FileServiceImpl implements FileService {
         of.setFileCount(1);
         of.setFileMd5(uploadDto.getMD5());
         of.setFileSize(uploadDto.getSize());
-        of.setSource_id(sourceId);
+        of.setSourceId(sourceId);
         originalFileDao.insertOrUpdateOriginFile(of);
         OriginalFile originalFile = originalFileDao.getByOriginFileId(originFileId, sourceId);
         return originalFile;

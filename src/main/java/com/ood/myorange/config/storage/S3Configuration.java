@@ -13,20 +13,20 @@ import org.springframework.stereotype.Component;
 public class S3Configuration implements StorageConfiguration, java.io.Serializable {
     private String awsAccessKeyId;
     private String awsSecretAccessKey;
-    private String region;
-    private String bucketName;
+    private String awsRegion;
+    private String awsBucketName;
 
     public S3Configuration() {
         awsAccessKeyId = "Default";
         awsSecretAccessKey = "Default";
-        region = "Default";
-        bucketName = "Default";
+        awsRegion = "Default";
+        awsBucketName = "Default";
     }
 
     public S3Configuration(S3Configuration s3Config) {
         awsAccessKeyId = s3Config.getAwsAccessKeyId();
         awsSecretAccessKey = s3Config.getAwsSecretAccessKey();
-        region = s3Config.getRegion();
-        bucketName = s3Config.getBucketName();
+        awsRegion = s3Config.getAwsRegion();
+        awsBucketName = s3Config.getAwsBucketName();
     }
 }

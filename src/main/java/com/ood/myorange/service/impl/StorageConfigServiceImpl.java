@@ -14,11 +14,13 @@ import com.ood.myorange.service.StorageConfigService;
 import com.ood.myorange.util.ModelMapperUtil;
 import com.ood.myorange.util.StorageConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ood.myorange.config.storage.StorageType.AWS;
+import static com.ood.myorange.config.storage.StorageType.AZURE;
 
 /**
  * Created by Guancheng Lai on 03/19/2020
@@ -66,10 +68,10 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         StorageType type;
         switch (configDto.getType()) {
             case "AWS":
-                type = StorageType.AWS;
+                type = AWS;
                 break;
             case "AZURE":
-                type = StorageType.AZURE;
+                type = AZURE;
                 break;
             case "LOCAL":
                 type = StorageType.LOCAL;
@@ -89,7 +91,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         }
 
         storageConfigDao.deleteByPrimaryKey( configId );
-        StorageConfigUtil.eraseStorageConfiguration( queryResult.getType() );
+        StorageConfigUtil.eraseStorageConfiguration( configId );
     }
 
     /* --------------------------Helper Functions Starts----------------------------------------------------------------------- */
@@ -99,23 +101,24 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         switch (configDto.getType()) {
             case "AWS":
                 S3Configuration s3Configuration = configDto.getAwsConfiguration();
-//                if (StorageConfigUtil.validateS3( s3Configuration )) {
-                if (true) {
+                if (StorageConfigUtil.validateS3( s3Configuration )) {
+//                if (true) {
                     // Setting up Pojo
-                    configToUpdate.setType( StorageType.AWS );
+                    configToUpdate.setType( AWS );
                     configToUpdate.setConfig( objectMapper.writeValueAsString( s3Configuration ) );
                     configToUpdate.setCurrentUse( configDto.isCurrentUse() );
 
                     // Insert into DB
-                    if (storageConfigDao.countSourceByType( StorageType.AWS ) == 0) {
+                    if (storageConfigDao.countSourceByType( AWS ) == 0) {
                         storageConfigDao.insertSource(configToUpdate.getName(), configToUpdate.getType(), configToUpdate.getConfig());
                     }
                     else {
-                        storageConfigDao.updateSourceByType( StorageType.AWS, configToUpdate.getName(), configToUpdate.getConfig(), configToUpdate.isCurrentUse() );
+                        storageConfigDao.updateSourceByType( AWS, configToUpdate.getName(), configToUpdate.getConfig(), configToUpdate.isCurrentUse() );
                     }
 
-                    // Insert into in memory HashMap
-                    StorageConfigUtil.putStorageConfiguration( StorageType.AWS,s3Configuration );
+                    // Insert into the in-memory HashMap
+                    int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
+                    StorageConfigUtil.insertStorageConfig( sourceId,"AWS",s3Configuration );
 
                 }
                 else {
@@ -128,19 +131,20 @@ public class StorageConfigServiceImpl implements StorageConfigService {
                 if (StorageConfigUtil.validateAzure( azureConfiguration )) {
 
                     // Setting up Pojo
-                    configToUpdate.setType( StorageType.AZURE );
+                    configToUpdate.setType( AZURE );
                     configToUpdate.setConfig( objectMapper.writeValueAsString( azureConfiguration ) );
 
                     // Insert into DB
-                    if (storageConfigDao.countSourceByType( StorageType.AZURE ) == 0) {
+                    if (storageConfigDao.countSourceByType( AZURE ) == 0) {
                         storageConfigDao.insertSource(configToUpdate.getName(), configToUpdate.getType(), configToUpdate.getConfig());
                     }
                     else {
-                        storageConfigDao.updateSourceByType( StorageType.AZURE, configToUpdate.getName(), configToUpdate.getConfig(), configToUpdate.isCurrentUse() );
+                        storageConfigDao.updateSourceByType( AZURE, configToUpdate.getName(), configToUpdate.getConfig(), configToUpdate.isCurrentUse() );
                     }
 
-                    // Insert into in memory HashMap
-                    StorageConfigUtil.putStorageConfiguration( StorageType.AZURE,azureConfiguration );
+                    // Insert into the in-memory HashMap
+                    int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
+                    StorageConfigUtil.insertStorageConfig( sourceId,"AZURE",azureConfiguration );
 
                 }
                 else {
@@ -155,16 +159,15 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         }
     }
 
-
     private StorageConfig extract_from_dto_to_pojo(StorageConfigDto configDto) throws JsonProcessingException {
         StorageConfig updatedConfig = ModelMapperUtil.mapping( configDto,StorageConfig.class );
         switch (configDto.getType()) {
             case "AWS":
-                updatedConfig.setType( StorageType.AWS );
+                updatedConfig.setType( AWS );
                 updatedConfig.setConfig( objectMapper.writeValueAsString( configDto.getAwsConfiguration() ) );
                 break;
             case "AZURE":
-                updatedConfig.setType( StorageType.AZURE );
+                updatedConfig.setType( AZURE );
                 updatedConfig.setConfig( objectMapper.writeValueAsString( configDto.getAzureConfiguration() ) );
                 break;
             case "LOCAL":
@@ -178,7 +181,8 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
         switch (storageConfig.getType()) {
             case AWS:
-                result.setAWS( objectMapper.readValue( storageConfig.getConfig(),S3Configuration.class ) );
+                S3Configuration config = objectMapper.readValue( storageConfig.getConfig(),S3Configuration.class );
+                result.setAWS( config );
                 break;
             case AZURE:
                 result.setAzure( objectMapper.readValue( storageConfig.getConfig(),AzureConfiguration.class ) );

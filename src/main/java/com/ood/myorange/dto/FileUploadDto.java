@@ -14,4 +14,5 @@ public class FileUploadDto {
     private Long size;
     private String MD5;
     private Integer dirId;
+    private String uploadKey; // Only needed in the second upload request
 }
