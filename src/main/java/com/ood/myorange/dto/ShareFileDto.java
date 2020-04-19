@@ -14,7 +14,8 @@ import java.sql.Timestamp;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShareFileDto {
-    private int id;
+    private int shareId;
+    private int fileId;
     private String name;
     private FileType type;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -24,7 +25,7 @@ public class ShareFileDto {
     private boolean hasPassword;
     private String shareKey;
     private String password;
-    private String size;
+    private Long size;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createDate;
 

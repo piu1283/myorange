@@ -13,6 +13,9 @@ import java.util.List;
 public interface ShareFileService {
 
     List<ShareFileDto> getAllShareFiles() throws JsonProcessingException;
+    ShareFileDto getShareFileByShareKey(String shareKey) throws JsonProcessingException;
+    ShareFileDto updateShareFile(int shareId,Timestamp deadline,int limitDownloadTimes,boolean hasPassword) throws JsonProcessingException;
+    void deleteShareFile(int shareId) throws JsonProcessingException;
     ShareFileDto addShareFile(int fileID, Timestamp deadline, int limitDownloadTimes, boolean hasPassword) throws JsonProcessingException;
 
 }
