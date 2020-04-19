@@ -1,7 +1,6 @@
 package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
 import com.ood.myorange.exception.InvalidRequestException;
@@ -20,9 +19,6 @@ public class UploadController {
 
     @Autowired
     UploadService uploadService;
-
-    @Autowired
-    ICurrentAccount currentAccount;
 
     @GetMapping("/upload")
     public PreSignedUrlResponse getPreSignedURL (

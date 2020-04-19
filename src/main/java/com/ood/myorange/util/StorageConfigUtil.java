@@ -12,7 +12,6 @@ import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.DeleteObjectsResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.config.storage.*;
 import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.exception.InternalServerError;
@@ -27,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * Created by Guancheng Lai
  */
@@ -37,9 +35,6 @@ public class StorageConfigUtil {
 
     @Autowired
     StorageConfigService storageConfigService;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     public static HashMap<Integer, StorageConfiguration> storageConfigurationHashMap = new HashMap<>();
     public static HashMap<Integer, StorageType> storageTypeHashMap = new HashMap<>();

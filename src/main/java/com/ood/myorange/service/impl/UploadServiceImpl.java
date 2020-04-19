@@ -11,13 +11,10 @@ import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
-import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.exception.InternalServerError;
 import com.ood.myorange.service.*;
-import com.ood.myorange.util.ModelMapperUtil;
 import com.ood.myorange.util.NamingUtil;
 import com.ood.myorange.util.StorageConfigUtil;
-import com.oracle.tools.packager.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,13 +159,13 @@ public class UploadServiceImpl implements UploadService {
                 S3Object s3Object = s3Client.getObject( s3Configuration.getAwsBucketName(),fileObjectName );
             }
             catch (AmazonS3Exception e) {
-                Log.info( "File Already exist" );
+                log.info( "File Already exist" );
             }
 
             String tempBucketName = AWSCreateTempBucket( s3Client,fileObjectName );
             String preSignedURL = AWSGenerateURL( s3Client,tempBucketName,fileObjectName );
 
-            Log.info("AWS Upload Pre-Signed URL has been generated: " + preSignedURL );
+            log.info("AWS Upload Pre-Signed URL has been generated: " + preSignedURL );
             preSignedUrlResponse.setUploadUrl( preSignedURL );
             preSignedUrlResponse.setUploadKey( tempBucketName );
         } catch (
@@ -197,7 +194,7 @@ public class UploadServiceImpl implements UploadService {
             tempBucketName = "my-orange-" +
                     fileObjectName.substring( 0,32 ).toLowerCase() + "-" +
                     System.currentTimeMillis();
-            Log.info( tempBucketName + ", size = " + tempBucketName.length() );
+            log.info( tempBucketName + ", size = " + tempBucketName.length() );
         }
 
         List<CORSRule.AllowedMethods> ruleAM = new ArrayList<CORSRule.AllowedMethods>();
