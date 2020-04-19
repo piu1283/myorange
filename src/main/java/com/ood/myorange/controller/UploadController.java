@@ -2,6 +2,7 @@ package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ood.myorange.dto.FileUploadDto;
+import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.UploadService;
@@ -22,38 +23,25 @@ public class UploadController {
 
     @GetMapping("/upload")
     public PreSignedUrlResponse getPreSignedURL (
-            @RequestParam(value = "md5", required = true) String md5,
-            @RequestParam(value = "size", required = true) Long size,
-            @RequestParam(value = "fileName", required = true) String fileName,
-            @RequestParam(value = "dirId", required = true) Integer dirId
+            @RequestBody FileUploadDto fileUploadDto
     ) throws JsonProcessingException {
-        if (size <= 0) { throw new InvalidRequestException( "Invalid file size: " + size); }
-        if (md5.length() != 32) { throw new InvalidRequestException( "Invalid file md5: " + md5); }
-        if (fileName.isEmpty()) { throw new InvalidRequestException( "Invalid file name: " + fileName); }
-        if (dirId < 0) { throw new InvalidRequestException( "Invalid dirID: " + dirId); }
-
-        FileUploadDto fileUploadDto = new FileUploadDto();
-        fileUploadDto.setMD5( md5 );
-        fileUploadDto.setSize( size );
-        fileUploadDto.setName( fileName );
-        fileUploadDto.setDirId( dirId );
+        validateFileUploadDto( fileUploadDto );
         return uploadService.getPreSignedUrl( fileUploadDto );
     }
 
     @PostMapping("/upload")
     public void uploadFinished(
-            @RequestParam(value = "dirId", required = true) int dirId,
-            @RequestParam(value = "fileName", required = true) String fileName,
-            @RequestParam(value = "md5", required = true) String md5,
-            @RequestParam(value = "size", required = true) Long size,
-            @RequestParam(value = "uploadKey", required = true) String uploadKey
+            @RequestBody FileUploadDto fileUploadDto
     ) throws JsonProcessingException {
-        FileUploadDto fileUploadDto = new FileUploadDto();
-        fileUploadDto.setMD5( md5 );
-        fileUploadDto.setSize( size );
-        fileUploadDto.setName( fileName );
-        fileUploadDto.setDirId( dirId );
-        fileUploadDto.setUploadKey( uploadKey );
+        validateFileUploadDto( fileUploadDto );
         uploadService.uploadFinished( fileUploadDto );
+    }
+
+    private void validateFileUploadDto(FileUploadDto fileUploadDto) {
+        if (fileUploadDto.getSize() <= 0) { throw new InvalidRequestException( "Invalid file size: " + fileUploadDto.getSize()); }
+        if (fileUploadDto.getMD5().length() != 32) { throw new InvalidRequestException( "Invalid file md5: " + fileUploadDto.getMD5()); }
+        if (fileUploadDto.getName().isEmpty()) { throw new InvalidRequestException( "Invalid file name: " + fileUploadDto.getName()); }
+        if (fileUploadDto.getDirId() < 0) { throw new InvalidRequestException( "Invalid dirID: " + fileUploadDto.getDirId()); }
+
     }
 }
