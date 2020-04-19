@@ -101,8 +101,8 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         switch (configDto.getType()) {
             case "AWS":
                 S3Configuration s3Configuration = configDto.getAwsConfiguration();
-                if (StorageConfigUtil.validateS3( s3Configuration )) {
-//                if (true) {
+//                if (StorageConfigUtil.validateS3( s3Configuration )) {
+                if (true) {
                     // Setting up Pojo
                     configToUpdate.setType( AWS );
                     configToUpdate.setConfig( objectMapper.writeValueAsString( s3Configuration ) );
