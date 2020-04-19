@@ -41,7 +41,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         List<StorageConfigDto> result = new ArrayList<>();
 
         for (StorageConfig q : queryConfigList) {
-            result.add( extract_from_pojo_to_dto( q ));
+            result.add(extract_from_pojo_to_dto(q));
         }
 
         return result;
@@ -49,18 +49,18 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
     @Override
     public StorageConfigDto getConfiguration(int configId) throws JsonProcessingException {
-        StorageConfig queryResult = storageConfigDao.selectByPrimaryKey( configId );
+        StorageConfig queryResult = storageConfigDao.selectByPrimaryKey(configId);
         if (queryResult == null) {
-            throw new ResourceNotFoundException( "Storage configuration not found by the given configId" );
+            throw new ResourceNotFoundException("Storage configuration not found by the given configId");
         }
 
-        StorageConfigDto result = extract_from_pojo_to_dto( queryResult );
+        StorageConfigDto result = extract_from_pojo_to_dto(queryResult);
         return result;
     }
 
     @Override
     public void addConfiguration(StorageConfigDto configDto) throws JsonProcessingException {
-        InsertOrUpdateConfiguration( configDto );
+        InsertOrUpdateConfiguration(configDto);
     }
 
     @Override
@@ -77,27 +77,53 @@ public class StorageConfigServiceImpl implements StorageConfigService {
                 type = StorageType.LOCAL;
                 break;
             default:
-                throw new ResourceNotFoundException( "Invalid storage type" );
+                throw new ResourceNotFoundException("Invalid storage type");
         }
 
-        InsertOrUpdateConfiguration( configDto );
+        InsertOrUpdateConfiguration(configDto);
     }
 
     @Override
     public void deleteConfiguration(int configId) {
-        StorageConfig queryResult = storageConfigDao.selectByPrimaryKey( configId );
+        StorageConfig queryResult = storageConfigDao.selectByPrimaryKey(configId);
         if (queryResult == null) {
-            throw new ResourceNotFoundException( "Storage configuration not found by the given configId, can not proceed deletion" );
+            throw new ResourceNotFoundException("Storage configuration not found by the given configId, can not proceed deletion");
         }
 
         storageConfigDao.deleteByPrimaryKey( configId );
         StorageConfigUtil.eraseStorageConfiguration( configId );
     }
 
+    @Override
+    public List<StorageConfigDto> getAllConfigurationsWithoutDetail() {
+        List<StorageConfig> storageConfigs = storageConfigDao.selectAll();
+        List<StorageConfigDto> res = new ArrayList<>();
+        storageConfigs.forEach(storageConfig -> {
+            StorageConfigDto dto = new StorageConfigDto();
+            dto.setId(storageConfig.getId());
+            dto.setName(storageConfig.getName());
+            dto.setType(storageConfig.getType().toString());
+            res.add(dto);
+        });
+        return res;
+    }
+
+    @Override
+    public StorageConfigDto getConfigurationsWithoutDetail(int sourceId) {
+        StorageConfig storageConfig = storageConfigDao.selectByPrimaryKey(new StorageConfig(sourceId));
+
+        StorageConfigDto dto = new StorageConfigDto();
+        dto.setId(storageConfig.getId());
+        dto.setName(storageConfig.getName());
+        dto.setType(storageConfig.getType().toString());
+
+        return dto;
+    }
+
     /* --------------------------Helper Functions Starts----------------------------------------------------------------------- */
 
     private void InsertOrUpdateConfiguration(StorageConfigDto configDto) throws JsonProcessingException {
-        StorageConfig configToUpdate = ModelMapperUtil.mapping( configDto,StorageConfig.class );
+        StorageConfig configToUpdate = ModelMapperUtil.mapping(configDto, StorageConfig.class);
         switch (configDto.getType()) {
             case "AWS":
                 S3Configuration s3Configuration = configDto.getAwsConfiguration();
@@ -120,15 +146,14 @@ public class StorageConfigServiceImpl implements StorageConfigService {
                     int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
                     StorageConfigUtil.insertStorageConfig( sourceId,"AWS",s3Configuration );
 
-                }
-                else {
-                    throw new InvalidRequestException( "Could not validate the AWS S3 configuration" + configDto.getName() );
+                } else {
+                    throw new InvalidRequestException("Could not validate the AWS S3 configuration" + configDto.getName());
                 }
 
                 break;
             case "AZURE":
                 AzureConfiguration azureConfiguration = configDto.getAzureConfiguration();
-                if (StorageConfigUtil.validateAzure( azureConfiguration )) {
+                if (StorageConfigUtil.validateAzure(azureConfiguration)) {
 
                     // Setting up Pojo
                     configToUpdate.setType( AZURE );
@@ -146,21 +171,20 @@ public class StorageConfigServiceImpl implements StorageConfigService {
                     int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
                     StorageConfigUtil.insertStorageConfig( sourceId,"AZURE",azureConfiguration );
 
-                }
-                else {
-                    throw new InvalidRequestException( "Could not validate the Azure configuration:" + configDto.getName());
+                } else {
+                    throw new InvalidRequestException("Could not validate the Azure configuration:" + configDto.getName());
                 }
 
                 break;
             case "LOCAL":
                 break;
             default:
-                throw new InvalidRequestException( "Storage ServiceImpl: Invalid Storage type:" + configDto.getType());
+                throw new InvalidRequestException("Storage ServiceImpl: Invalid Storage type:" + configDto.getType());
         }
     }
 
     private StorageConfig extract_from_dto_to_pojo(StorageConfigDto configDto) throws JsonProcessingException {
-        StorageConfig updatedConfig = ModelMapperUtil.mapping( configDto,StorageConfig.class );
+        StorageConfig updatedConfig = ModelMapperUtil.mapping(configDto, StorageConfig.class);
         switch (configDto.getType()) {
             case "AWS":
                 updatedConfig.setType( AWS );
@@ -185,12 +209,12 @@ public class StorageConfigServiceImpl implements StorageConfigService {
                 result.setAWS( config );
                 break;
             case AZURE:
-                result.setAzure( objectMapper.readValue( storageConfig.getConfig(),AzureConfiguration.class ) );
+                result.setAzure(objectMapper.readValue(storageConfig.getConfig(), AzureConfiguration.class));
                 break;
             case LOCAL:
                 break;
             default:
-                throw new InternalError( "Failed to convert pojo to dto due to error storage type" );
+                throw new InternalError("Failed to convert pojo to dto due to error storage type");
         }
 
         return result;

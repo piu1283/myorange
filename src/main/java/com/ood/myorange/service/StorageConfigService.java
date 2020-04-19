@@ -16,5 +16,17 @@ public interface StorageConfigService {
     void addConfiguration(StorageConfigDto queryDto) throws JsonProcessingException;
     void updateConfiguration(StorageConfigDto configDto) throws JsonProcessingException;
     void deleteConfiguration(int configId);
+
+    /**
+     * get id, name, type of all storage config, but not the detail
+     * @return list of config
+     */
+    List<StorageConfigDto> getAllConfigurationsWithoutDetail();
+
+    /**
+     * get id, name, type of storage config, but not the detail
+     * @return list of config
+     */
+    StorageConfigDto getConfigurationsWithoutDetail(int sourceId);
     
 }

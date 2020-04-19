@@ -2,14 +2,12 @@ package com.ood.myorange.pojo;
 
 import com.ood.myorange.config.storage.StorageType;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Column;
-import javax.persistence.Table;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
@@ -30,4 +28,8 @@ public class StorageConfig {
     private Timestamp createdTime;
     private Timestamp modifyTime;
     private boolean currentUse;
+
+    public StorageConfig(int id) {
+        this.id = id;
+    }
 }

@@ -35,12 +35,20 @@ public class NamingUtil {
     public static String[] splitFileName(String name) {
         int idx = name.lastIndexOf('.');
         String [] res = new String[2];
-        res[0] = name.substring(0, idx);
-        res[1] = name.substring(idx + 1);
+        if (idx < 0) {
+            res[0] = name;
+            res[1] = "";
+        } else {
+            res[0] = name.substring(0, idx);
+            res[1] = name.substring(idx + 1);
+        }
         return res;
     }
 
     public static boolean validEmailAddress(String email) {
+        if (StringUtils.isBlank(email)) {
+            return false;
+        }
         return email.matches("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
     }
 

@@ -22,7 +22,7 @@ public interface MailSenderService {
      * send user mail for user register
      * @param toAddress
      */
-    void sendAddUserMail(String toAddress);
+    void sendAddUserMail(String toAddress, String password);
 
     /**
      * send test mail to target address

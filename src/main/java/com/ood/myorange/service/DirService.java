@@ -86,6 +86,10 @@ public interface DirService {
      */
     void deleteDir(int dirId);
 
-
+    /**
+     * create default root dir for new user
+     * @param userId
+     */
+    void createDefaultDir(int userId);
 
 }

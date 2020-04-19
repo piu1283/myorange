@@ -173,8 +173,7 @@ public class FileServiceImpl implements FileService {
         of.setFileSize(uploadDto.getSize());
         of.setSourceId(sourceId);
         originalFileDao.insertOrUpdateOriginFile(of);
-        OriginalFile originalFile = originalFileDao.getByOriginFileId(originFileId, sourceId);
-        return originalFile;
+        return originalFileDao.getByOriginFileId(originFileId, sourceId);
     }
 
     @Override

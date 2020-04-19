@@ -1,14 +1,14 @@
 package com.ood.myorange.controller;
 
 import com.ood.myorange.auth.ICurrentAccount;
-import com.ood.myorange.dto.response.UserDto;
-import com.ood.myorange.exception.ResourceNotFoundException;
+import com.ood.myorange.dto.UserProfile;
+import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * Created by Chen on 2/14/20.
@@ -24,17 +24,17 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping(path = "/users/{id}")
-    public UserDto getUserInfo(@PathVariable("id") Integer id, @RequestParam("toke_task") String tokenTask, @RequestBody UserDto userDto) {
-        log.info("this is a test log");
-        // this line can get the user detail in the context
-        System.out.println(currentAccount.getUserInfo());
-        throw new ResourceNotFoundException("file you want is not there.");
+    @PostMapping(path = "/profile")
+    public UserProfile changeUserProfile(@RequestBody UserProfile modifyProfile) {
+        if (modifyProfile.getBirthday().getTime() > new Date().getTime()) {
+            throw new InvalidRequestException("We don't recommend time travel.");
+        }
+        return userService.modifyUserProfile(modifyProfile);
     }
 
-    @GetMapping(path = "/users")
-    public List<UserDto> getAllUser() {
-        return userService.getAllUser();
+    @GetMapping(path = "/profile")
+    public UserProfile getUserProfile() {
+        return userService.getUserProfile();
     }
 
 }

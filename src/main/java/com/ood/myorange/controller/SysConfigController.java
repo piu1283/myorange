@@ -33,6 +33,9 @@ public class SysConfigController {
 
     @PostMapping("/mail/test")
     public void testSendingEmail(@RequestParam("addr") String address) {
+        if (!NamingUtil.validEmailAddress(address)) {
+            throw new InvalidRequestException("invalid target email address");
+        }
         mailSenderService.sendTestMail(address);
     }
 
@@ -40,7 +43,7 @@ public class SysConfigController {
         if (mailConfig == null
                 || StringUtils.isBlank(mailConfig.getHost())
                 || StringUtils.isBlank(mailConfig.getPassword())
-                || NamingUtil.validEmailAddress(mailConfig.getMailAddress())) {
+                || !NamingUtil.validEmailAddress(mailConfig.getMailAddress())) {
             throw new InvalidRequestException("invalid params for mail configuration.");
         }
         if(StringUtils.isBlank(mailConfig.getSender())){
