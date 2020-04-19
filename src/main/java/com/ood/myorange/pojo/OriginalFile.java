@@ -36,7 +36,7 @@ public class OriginalFile {
     private String fileMd5;
     private Long fileSize;
     private Integer fileCount;
-    private Integer source_id;
+    private Integer sourceId;
     private Timestamp createTime;
     private Timestamp modifyTime;
 }

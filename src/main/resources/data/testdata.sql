@@ -55,7 +55,7 @@ VALUES
 (
     'myS3',
     'AWS',
-    '{"aws_access_key_id": "keyid1","aws_secret_access_key" : "accesskey1","region" : "us-east-2","bucket_name" : "my-bucket-glai-01"}'
+    '{"aws_access_key_id": "keyid1","aws_secret_access_key" : "accesskey1","aws_region" : "us-east-2","aws_bucket_name" : "my-bucket-glai-01"}'
 ),
 (
     'myAzure',
