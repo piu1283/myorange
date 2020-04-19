@@ -17,6 +17,7 @@ public class FileTypeUtil {
 
 
     public static FileType getFileTypeBySuffixes(String suffixes){
+        suffixes = suffixes.toLowerCase();
         if (IMG_TYPE_SET.contains(suffixes)) {
             return FileType.IMG;
         }

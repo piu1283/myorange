@@ -1,6 +1,6 @@
 package com.ood.myorange.controller;
 
-import com.ood.myorange.dto.response.UserDto;
+import com.ood.myorange.dto.AdminUserDto;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class ShareController {
 
     // This just an example, you should return file detail instead of userDto
     @PostMapping("/share/{key}")
-    public UserDto getShareFile(@PathVariable("key") String key) {
+    public AdminUserDto getShareFile(@PathVariable("key") String key) {
         String redisShareKey = RedisUtil.getRedisShareKey(key);
         Map<Object, Object> properties = redisUtil.getHashEntries(redisShareKey);
         if (properties == null || properties.isEmpty()) {
@@ -32,6 +32,6 @@ public class ShareController {
         }
         //... add rest logic
 
-        return new UserDto();
+        return new AdminUserDto();
     }
 }

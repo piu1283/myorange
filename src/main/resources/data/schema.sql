@@ -1,17 +1,18 @@
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user` (
   `id` INT(11) auto_increment PRIMARY KEY COMMENT 'id',
-  `birthday` date NOT NULL COMMENT 'birthday',
+  `birthday` date COMMENT 'birthday',
   `first_name` varchar(20) NOT NULL COMMENT 'first_name',
   `last_name` varchar(20) NOT NULL COMMENT 'last_name',
   `email` varchar(50) NOT NULL COMMENT 'email should be unique',
-  `gender` enum('M','F') NOT NULL COMMENT 'gender using enum',
+  `gender` enum('M','F') NOT NULL DEFAULT 'M' COMMENT 'gender using enum',
   `password` varchar(100) NOT NULL COMMENT 'password, max for 20 char',
   `memory_size` BIGINT(13) UNSIGNED DEFAULT 1073741824 COMMENT 'total space default 1G',
   `used_size` BIGINT(13) UNSIGNED DEFAULT 0 COMMENT 'used space',
   `source_id` INT(11) NOT NULL DEFAULT 1 COMMENT 'upload source id',
   `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-  `blocked` boolean NOT NULL DEFAULT false COMMENT 'is blocked or not, if yes, user cannot login'
+  `blocked` boolean NOT NULL DEFAULT false COMMENT 'is blocked or not, if yes, user cannot login',
+  `deleted` boolean NOT NULL DEFAULT false COMMENT 'is deleted or not, if yes, all the user info and file will be deleted later'
 ) COMMENT 'user information table';
 
 DROP TABLE IF EXISTS `t_permission`;

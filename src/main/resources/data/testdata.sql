@@ -73,5 +73,5 @@ VALUES("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA_3456324", "AAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 -- sysConfig for mail
 INSERT INTO `sys_config`(`class_id`,`config`)
-VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange098@gmail.com\",\"host\":\"smtp.gmail.com\",\"port\":465,\"password\":\"Myorange123\",\"sender\":\"mo\"}');
+VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange098@gmail.com\",\"host\":\"smtp.gmail.com\",\"port\":587,\"password\":\"Myorange123\",\"sender\":\"mo\"}');
 

@@ -126,6 +126,17 @@ public class DirServiceImpl implements DirService {
         userDirDao.deleteDirAndItsChildByUpdate(dirId);
     }
 
+    @Override
+    public void createDefaultDir(int userId) {
+        UserDir userDir = new UserDir();
+        userDir.setUserId(userId);
+        userDir.setParentId(0);
+        userDir.setDirName("/");
+        userDir.setDefaultDir(true);
+        userDir.setDeleted(false);
+        userDirDao.insertSelective(userDir);
+    }
+
     private DirsDto convertObject(UserDir userDir) {
         DirsDto dirsDto = new DirsDto();
         dirsDto.setId(userDir.getDirId());

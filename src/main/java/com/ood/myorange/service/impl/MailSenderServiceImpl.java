@@ -22,7 +22,7 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
 
 
     @PostConstruct
-    public void init () {
+    public void initSender () {
         MailConfig config = getSysConfig(MailConfig.class);
         if (config == null) {
             return;
@@ -51,7 +51,7 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
     @Override
     public void updateMailConfig(MailConfig config) {
         updateSysConfig(config);
-        init();
+        initSender();
     }
 
     @Override
@@ -60,8 +60,19 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
     }
 
     @Override
-    public void sendAddUserMail(String toAddress) {
-
+    public void sendAddUserMail(String toAddress, String password) {
+        MailConfig config = checkConfig();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(config.getHost());
+        message.setTo(toAddress);
+        message.setSubject("Invitation from " + config.getSender() + "");
+        message.setText(
+                "Hi there, \n" +
+                        "This is an Invitation email from My Orange Net Disk. \n" +
+                        "You have been invited to join " + config.getSender() + "'s net disk. \n" +
+                        "You can use your email and password : [" + password + "] to login in. \n"
+        );
+        sender.send(message);
     }
 
     @Override
