@@ -6,8 +6,10 @@ import com.ood.myorange.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -51,34 +53,46 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = { HttpRequestMethodNotSupportedException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public BaseResponse HttpRequestMethodNotSupportedExceptionHandler(Exception ex) {
+        log.error("Exception:: ", ex);
         return BaseResponse.failure(ex.getMessage());
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public BaseResponse AccessDeniedExceptionExceptionHandler(Exception ex) {
+        log.error("Exception:: ", ex);
         return BaseResponse.failure(ex.getMessage());
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse IllegalArgumentExceptionExceptionHandler(Exception ex) {
+        log.error("Exception:: ", ex);
         return BaseResponse.failure("Bad request parameters.");
     }
 
     @ExceptionHandler(value = {NullPointerException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse NullPointerExceptionExceptionHandler(Exception ex) {
+        log.error("Exception:: ", ex);
         return BaseResponse.failure(ex.getMessage());
     }
 
     @ExceptionHandler(value = {DataAccessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse DataAccessExceptionHandler(DataAccessException ex) {
+        log.error("Exception:: ", ex);
         if (ex.getCause() instanceof SQLIntegrityConstraintViolationException) {
-            return BaseResponse.failure("There is same name file/dir already exist in target dir.");
+            return BaseResponse.failure("Duplicate data exist");
         }
         return unknownException(ex);
+    }
+
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse httpMessageNotReadableOrMissingExceptionHandler(Exception ex) {
+        log.error("Exception: ", ex);
+        return BaseResponse.failure(ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(value = {Exception.class})

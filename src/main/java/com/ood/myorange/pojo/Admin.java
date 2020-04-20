@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class Admin {
     @Id
     @Column(name = "id")
-    private int id;
+    private Integer id;
     private String name;
     private String password;
     private Timestamp createTime;

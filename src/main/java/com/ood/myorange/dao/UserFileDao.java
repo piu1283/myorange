@@ -4,10 +4,7 @@ import com.ood.myorange.config.BaseDao;
 import com.ood.myorange.constant.enumeration.FileType;
 import com.ood.myorange.dao.sqlprovider.FileDirSqlProvider;
 import com.ood.myorange.pojo.UserFile;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -44,12 +41,18 @@ public interface UserFileDao extends BaseDao<UserFile> {
     List<Integer> checkFilesByIdAndUserId(List<Integer> dirIds, int userId);
 
     /**
-     * recursively "delete" files of one dir and all its children.
-     * not real deletion, only set deleted to true
+     * The function later will be change to real delete,
+     * for now we don't need it.
      * @param dirId target dir id
      */
     @UpdateProvider(type = FileDirSqlProvider.class, method = "deleteFilesUnderDirAndItsChildrenByUpdate")
     void deleteFilesUnderDirAndItsChildrenByUpdate(int dirId);
+
+    @UpdateProvider(type = FileDirSqlProvider.class, method = "deleteFilesByFileIds")
+    void deleteFilesByFileIds(@Param("fileIds") List<Integer> fileIds);
+
+    @UpdateProvider(type = FileDirSqlProvider.class, method = "updateUsedSizeDecreaseByFileIds")
+    void updateUsedSizeDecreaseByFileIds(List<Integer> fileIds, int userId);
 
     @SelectProvider(type = FileDirSqlProvider.class, method = "updateParentIdOfFiles")
     void updateParentIdOfFiles(List<Integer> fileIds, int targetId);
@@ -62,4 +65,11 @@ public interface UserFileDao extends BaseDao<UserFile> {
      */
     @UpdateProvider(type = FileDirSqlProvider.class, method = "deleteFile")
     void deleteFile(int fileId);
+
+    @SelectProvider(type = FileDirSqlProvider.class, method = "getAllFileIdUnderDir")
+    @ResultType(Integer.class)
+    List<Integer> getAllFileIdUnderDir(int dirId);
+
+    @Select("SELECT * FROM user_file WHERE `file_name`=#{name} AND `suffixes`=#{suffixes} AND `dir_id`=#{dirId}")
+    UserFile getUserFileByNameAndSuffixesAndDirId(String name, String suffixes, int dirId);
 }

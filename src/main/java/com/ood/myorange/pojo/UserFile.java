@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -35,6 +33,7 @@ import java.sql.Timestamp;
 public class UserFile {
     @Id
     @Column(name = "file_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY,generator="JDBC")
     private Integer fileId;
     private Integer userId;
     private Integer dirId;

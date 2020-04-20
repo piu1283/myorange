@@ -1,7 +1,10 @@
 package com.ood.myorange.service;
 
+import com.ood.myorange.constant.enumeration.FileStatus;
 import com.ood.myorange.constant.enumeration.FileType;
+import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.FilesDto;
+import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.pojo.UserFile;
 
 import java.util.List;
@@ -66,5 +69,48 @@ public interface FileService {
      */
     void deleteFileUnderDirAndItsChildren(int dirId);
 
+    /**
+     * get user file
+     * @param fileId
+     * @return
+     */
     UserFile getUserFileById(int fileId);
+
+    /**
+     * get original file data by user file Id
+     * @param fileId
+     * @return
+     */
+    OriginalFile getOriginalFileByFileId(int fileId);
+
+    /**
+     * add a user file
+     * If a file with same name already exist in the dir, the file will be overwritten
+     * @param uploadDto
+     * @return new file id
+     */
+    int addUserFile(FileUploadDto uploadDto, int originId);
+
+    /**
+     * check the whether a file is already exist
+     * @param uploadDto
+     * @return
+     */
+    boolean checkOriginFileExist(FileUploadDto uploadDto, int sourceId);
+
+    /**
+     * if origin file exist, update count
+     * if not, insert
+     * @param uploadDto
+     * @return
+     */
+    OriginalFile InsertOrUpdateOriginFile(FileUploadDto uploadDto, int sourceId);
+
+    /**
+     * change the status of file
+     *
+     * @param fileId
+     */
+    void changeFileStatus(int fileId, FileStatus status);
+
 }

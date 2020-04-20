@@ -16,6 +16,7 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: EST
   # exception if don't found handler
   mvc:
     throw-exception-if-no-handler-found: true
@@ -46,7 +47,7 @@ spring:
   datasource:
     username: root
     password: 123123123
-    url: jdbc:mysql://localhost:3306/db_test?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/db_test?serverTimezone=EST
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     # default sql script when spring started
@@ -120,7 +121,7 @@ spring:
   datasource:
     username: root
     password:
-    url: jdbc:mysql://127.0.0.1:3306/db_test?serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/db_test?serverTimezone=EST
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialization-mode: ALWAYS
