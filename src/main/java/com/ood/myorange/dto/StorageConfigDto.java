@@ -1,6 +1,7 @@
 package com.ood.myorange.dto;
 
 import com.ood.myorange.config.storage.AzureConfiguration;
+import com.ood.myorange.config.storage.LocalConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import lombok.Data;
 
@@ -15,40 +16,11 @@ public class StorageConfigDto {
     private String name;
     private String type;
 
-    // AWS
-    private String awsAccessKeyId;
-    private String awsSecretAccessKey;
-    private String awsRegion;
-    private String awsBucketName;
-
-    // Azure
-    private String azureToken;
+    private S3Configuration awsConfiguration;
+    private AzureConfiguration azureConfiguration;
+    private LocalConfiguration localConfiguration;
 
     private Timestamp createdTime;
     private Timestamp modifyTime;
     private boolean currentUse;
-
-    public void setAWS(S3Configuration config) {
-        this.awsAccessKeyId = config.getAwsAccessKeyId();
-        this.awsSecretAccessKey = config.getAwsSecretAccessKey();
-        this.awsRegion = config.getAwsRegion();
-        this.awsBucketName = config.getAwsBucketName();
-    }
-
-    public S3Configuration getAwsConfiguration() {
-        return new S3Configuration(
-                this.awsAccessKeyId,
-                this.awsSecretAccessKey,
-                this.awsRegion,
-                this.awsBucketName
-        );
-    }
-
-    public void setAzure(AzureConfiguration config) {
-        this.azureToken = config.getAzureToken();
-    }
-
-    public AzureConfiguration getAzureConfiguration() {
-        return new AzureConfiguration( this.azureToken );
-    }
 }

@@ -61,6 +61,11 @@ VALUES
     'myAzure',
     'AZURE',
     '{"azure_token" : "azureazure123456"}'
+),
+(
+    'myLocal',
+    'LOCAL',
+    '{\"local_path\" : \"/home/myorange/storage/v1\"}'
 );
 
 -- original file

@@ -69,27 +69,32 @@ public class StorageConfigController {
         switch (storageConfigDto.getType()) {
             case "AWS" :
                 if (
-                        storageConfigDto.getAwsAccessKeyId() == null
-                                || storageConfigDto.getAwsSecretAccessKey() == null
-                                || storageConfigDto.getAwsRegion() == null
-                                || storageConfigDto.getAwsBucketName() == null
+                        storageConfigDto.getAwsConfiguration().getAwsAccessKeyId() == null
+                                || storageConfigDto.getAwsConfiguration().getAwsSecretAccessKey() == null
+                                || storageConfigDto.getAwsConfiguration().getAwsRegion() == null
+                                || storageConfigDto.getAwsConfiguration().getAwsBucketName() == null
                 ) {
                     throw new InvalidRequestException( "Incomplete AWS S3 configuration"
-                            + ", key_id : " + storageConfigDto.getAwsAccessKeyId()
-                            + ", access_key : " + storageConfigDto.getAwsSecretAccessKey()
-                            + ", region : " + storageConfigDto.getAwsRegion()
-                            + ", bucket : " + storageConfigDto.getAwsBucketName()
+                            + ", key_id : " + storageConfigDto.getAwsConfiguration().getAwsAccessKeyId()
+                            + ", access_key : " + storageConfigDto.getAwsConfiguration().getAwsSecretAccessKey()
+                            + ", region : " + storageConfigDto.getAwsConfiguration().getAwsRegion()
+                            + ", bucket : " + storageConfigDto.getAwsConfiguration().getAwsBucketName()
                     );
                 }
                 break;
             case "AZURE" :
                 if (
-                        storageConfigDto.getAzureToken() == null
+                        storageConfigDto.getAzureConfiguration().getAzureToken() == null
                 ) {
                     throw new InvalidRequestException( "Incomplete Azure BlobStorage configuration" );
                 }
                 break;
             case "LOCAL" :
+                if (
+                        storageConfigDto.getLocalConfiguration() == null
+                ){
+                    throw new InvalidRequestException( "Incomplete Local configuration" );
+                }
                 break;
             default:
                 throw new InvalidRequestException( "Invalid storage type" );
