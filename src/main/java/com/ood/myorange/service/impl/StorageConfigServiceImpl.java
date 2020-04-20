@@ -3,6 +3,7 @@ package com.ood.myorange.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ood.myorange.config.storage.AzureConfiguration;
+import com.ood.myorange.config.storage.LocalConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dao.StorageConfigDao;
@@ -19,8 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ood.myorange.config.storage.StorageType.AWS;
-import static com.ood.myorange.config.storage.StorageType.AZURE;
+import static com.ood.myorange.config.storage.StorageType.*;
 
 /**
  * Created by Guancheng Lai on 03/19/2020
@@ -126,12 +126,11 @@ public class StorageConfigServiceImpl implements StorageConfigService {
         StorageConfig configToUpdate = ModelMapperUtil.mapping(configDto, StorageConfig.class);
         switch (configDto.getType()) {
             case "AWS":
-                S3Configuration s3Configuration = configDto.getAwsConfiguration();
-//                if (StorageConfigUtil.validateS3( s3Configuration )) {
+//                if (StorageConfigUtil.validateS3( configDto.getAwsConfiguration() )) {
                 if (true) {
                     // Setting up Pojo
                     configToUpdate.setType( AWS );
-                    configToUpdate.setConfig( objectMapper.writeValueAsString( s3Configuration ) );
+                    configToUpdate.setConfig( objectMapper.writeValueAsString( configDto.getAwsConfiguration() ) );
                     configToUpdate.setCurrentUse( configDto.isCurrentUse() );
 
                     // Insert into DB
@@ -144,7 +143,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
                     // Insert into the in-memory HashMap
                     int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
-                    StorageConfigUtil.insertStorageConfig( sourceId,"AWS",s3Configuration );
+                    StorageConfigUtil.insertStorageConfig( sourceId,"AWS",configDto.getAwsConfiguration() );
 
                 } else {
                     throw new InvalidRequestException("Could not validate the AWS S3 configuration" + configDto.getName());
@@ -152,12 +151,11 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
                 break;
             case "AZURE":
-                AzureConfiguration azureConfiguration = configDto.getAzureConfiguration();
-                if (StorageConfigUtil.validateAzure(azureConfiguration)) {
+                if (StorageConfigUtil.validateAzure(configDto.getAzureConfiguration())) {
 
                     // Setting up Pojo
                     configToUpdate.setType( AZURE );
-                    configToUpdate.setConfig( objectMapper.writeValueAsString( azureConfiguration ) );
+                    configToUpdate.setConfig( objectMapper.writeValueAsString( configDto.getAzureConfiguration() ) );
 
                     // Insert into DB
                     if (storageConfigDao.countSourceByType( AZURE ) == 0) {
@@ -169,7 +167,7 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
                     // Insert into the in-memory HashMap
                     int sourceId = storageConfigDao.SelectSourceByType( AWS ).getId();
-                    StorageConfigUtil.insertStorageConfig( sourceId,"AZURE",azureConfiguration );
+                    StorageConfigUtil.insertStorageConfig( sourceId,"AZURE",configDto.getAzureConfiguration() );
 
                 } else {
                     throw new InvalidRequestException("Could not validate the Azure configuration:" + configDto.getName());
@@ -177,6 +175,14 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
                 break;
             case "LOCAL":
+                LocalConfiguration localConfiguration = configDto.getLocalConfiguration();
+                configToUpdate.setName( configDto.getName() );
+                configToUpdate.setConfig( objectMapper.writeValueAsString( configDto.getLocalConfiguration() ) );
+                if (StorageConfigUtil.validateLocal(localConfiguration)) {
+                    storageConfigDao.updateSourceByType( LOCAL, configDto.getName(), configToUpdate.getConfig() , true );
+                } else {
+                    throw new InvalidRequestException("Could not validate the local path:" + configDto.getLocalConfiguration().getLocalPath());
+                }
                 break;
             default:
                 throw new InvalidRequestException("Storage ServiceImpl: Invalid Storage type:" + configDto.getType());
@@ -205,13 +211,14 @@ public class StorageConfigServiceImpl implements StorageConfigService {
 
         switch (storageConfig.getType()) {
             case AWS:
-                S3Configuration config = objectMapper.readValue( storageConfig.getConfig(),S3Configuration.class );
-                result.setAWS( config );
+                result.setAwsConfiguration( objectMapper.readValue( storageConfig.getConfig(),S3Configuration.class ) );
                 break;
             case AZURE:
-                result.setAzure(objectMapper.readValue(storageConfig.getConfig(), AzureConfiguration.class));
+                result.setAzureConfiguration( objectMapper.readValue( storageConfig.getConfig(),AzureConfiguration.class));
                 break;
             case LOCAL:
+                String s = storageConfig.getConfig();
+                result.setLocalConfiguration( objectMapper.readValue( s,LocalConfiguration.class ) );
                 break;
             default:
                 throw new InternalError("Failed to convert pojo to dto due to error storage type");

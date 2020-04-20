@@ -157,6 +157,11 @@ public class StorageConfigUtil {
         return true;
     }
 
+    public static boolean validateLocal(LocalConfiguration config) {
+        //TODO
+        return true;
+    }
+
     public static boolean validateS3(S3Configuration config) {
         try {
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
