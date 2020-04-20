@@ -31,9 +31,11 @@ public class SysConfigService {
 
     @PostConstruct
     public void init () throws ClassNotFoundException, JsonProcessingException {
+        log.info("Start init sysconfig....");
         // using reflection to read config object
         List<SysConfig> sysConfigs = sysConfigDao.selectAll();
         for (SysConfig config : sysConfigs) {
+            log.info("Found system config [{}]", config.getClassId());
             String className = config.getClassId();
             String content = config.getConfig();
             Class<?> configClass;
@@ -47,6 +49,7 @@ public class SysConfigService {
             Object o = objectMapper.readValue(content, configClass);
             configCenter.put(configClass, o);
         }
+        log.info("Finish loading system config.");
     }
 
 

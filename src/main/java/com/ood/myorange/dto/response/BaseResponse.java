@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 
 import java.sql.DatabaseMetaData;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -16,7 +19,7 @@ import java.util.Date;
 public class BaseResponse {
     private String msg;
     private Object resultData;
-    private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    private LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("GMT-4"));
 
     private BaseResponse(String msg, Object data) {
         this.msg = msg;
