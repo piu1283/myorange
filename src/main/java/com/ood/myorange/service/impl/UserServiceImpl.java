@@ -1,6 +1,6 @@
 package com.ood.myorange.service.impl;
 
-import com.ood.myorange.auth.CurrentAccount;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.constant.PermissionConstant;
 import com.ood.myorange.constant.enumeration.Gender;
 import com.ood.myorange.dao.UserDao;
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     MailSenderService mailSenderService;
 
     @Autowired
-    CurrentAccount currentAccount;
+    ICurrentAccount currentAccount;
 
     @Override
     public List<AdminUserDto> getAllAdminUser() {
@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
             else
                 removePermissionList.add(PermissionConstant.DOWNLOAD.toString());
         }
-        if (adminUserDto.getDownloadAccess() != null) {
-            if (adminUserDto.getDownloadAccess())
+        if (adminUserDto.getUploadAccess() != null) {
+            if (adminUserDto.getUploadAccess())
                 obtainPermissionList.add(PermissionConstant.UPLOAD.toString());
             else
                 removePermissionList.add(PermissionConstant.UPLOAD.toString());
