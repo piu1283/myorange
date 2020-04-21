@@ -4,6 +4,7 @@ import com.ood.myorange.config.sys.MailConfig;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.service.MailSenderService;
 import com.ood.myorange.service.SysConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -17,12 +18,14 @@ import java.util.Properties;
  */
 
 @Component
+@Slf4j
 public class MailSenderServiceImpl extends SysConfigService implements MailSenderService {
     private static JavaMailSenderImpl sender = new JavaMailSenderImpl();
 
 
     @PostConstruct
     public void initSender () {
+        log.info("Start init EMail config.....");
         MailConfig config = getSysConfig(MailConfig.class);
         if (config == null) {
             return;
@@ -38,6 +41,7 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
         p.setProperty("mail.smtp.starttls.enable", "true");
         p.setProperty("mail.smtp.starttls.required", "true");
         sender.setJavaMailProperties(p);
+        log.info("EMail config init success.");
     }
 
     private MailConfig checkConfig() {
@@ -68,7 +72,7 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
         message.setSubject("Invitation from " + config.getSender() + "");
         message.setText(
                 "Hi there, \n" +
-                        "This is an Invitation email from My Orange Net Disk. \n" +
+                        "This is an invitation email from My Orange Net Disk. \n" +
                         "You have been invited to join " + config.getSender() + "'s net disk. \n" +
                         "You can use your email and password : [" + password + "] to login in. \n"
         );
@@ -81,8 +85,8 @@ public class MailSenderServiceImpl extends SysConfigService implements MailSende
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(config.getHost());
         message.setTo(toAddress);
-        message.setSubject("This is an test mail from MyOrange");
-        message.setText("This is an test email from MyOrange\n" +
+        message.setSubject("This is a test mail from MyOrange");
+        message.setText("This is a test email from MyOrange\n" +
                 "If you receive this email, it means that the configuration of your email account of MyOrange system is worked.");
         sender.send(message);
     }

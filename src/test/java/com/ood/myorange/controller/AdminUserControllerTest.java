@@ -94,7 +94,6 @@ public class AdminUserControllerTest {
     public void changeUserPermissionAndMemory() throws Exception {
         AdminUserDto adminUserDto = new AdminUserDto();
         adminUserDto.setDownloadAccess(false);
-        adminUserDto.setUploadAccess(false);
         adminUserDto.setBlockedStatus(true);
         adminUserDto.setTotalStorage(10240L);
         RequestBuilder request = null;
@@ -104,7 +103,7 @@ public class AdminUserControllerTest {
         request = MockMvcRequestBuilders.get("/admin/users/1");
         mockMvc.perform(request).andExpect(status().isOk())
                 .andExpect(jsonPath("$.result_data.total_storage", is(10240)))
-                .andExpect(jsonPath("$.result_data.upload_access", is(false)))
+                .andExpect(jsonPath("$.result_data.upload_access", is(true)))
                 .andExpect(jsonPath("$.result_data.download_access", is(false)))
                 .andExpect(jsonPath("$.result_data.blocked_status", is(true)))
                 .andDo(print());

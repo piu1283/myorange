@@ -1,6 +1,6 @@
 package com.ood.myorange.service.impl;
 
-import com.ood.myorange.auth.CurrentAccount;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dao.AdminDao;
 import com.ood.myorange.pojo.Admin;
 import com.ood.myorange.service.AdminService;
@@ -18,7 +18,7 @@ public class AdminServiceImpl implements AdminService {
     AdminDao adminDao;
 
     @Autowired
-    CurrentAccount currentAccount;
+    ICurrentAccount currentAccount;
 
     @Override
     public Admin getAdminByName(String name) {
