@@ -13,7 +13,7 @@ public class AzureConfiguration implements StorageConfiguration {
     private String azureToken;
 
     public AzureConfiguration() {
-        azureToken = "Default";
+        azureToken = "";
     }
 
     public AzureConfiguration(String token) {
