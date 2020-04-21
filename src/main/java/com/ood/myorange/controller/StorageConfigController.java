@@ -54,7 +54,7 @@ public class StorageConfigController {
     @DeleteMapping("/config/storage/{configId}")
     public void deleteStorageConfig(
             @PathVariable int configId
-    ){
+    ) throws JsonProcessingException {
         validateConfigId( configId );
         storageConfigService.deleteConfiguration( configId );
     }

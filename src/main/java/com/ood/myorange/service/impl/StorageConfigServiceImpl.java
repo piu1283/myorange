@@ -84,13 +84,29 @@ public class StorageConfigServiceImpl implements StorageConfigService {
     }
 
     @Override
-    public void deleteConfiguration(int configId) {
+    public void deleteConfiguration(int configId) throws JsonProcessingException {
         StorageConfig queryResult = storageConfigDao.selectByPrimaryKey(configId);
         if (queryResult == null) {
             throw new ResourceNotFoundException("Storage configuration not found by the given configId, can not proceed deletion");
         }
 
-        storageConfigDao.deleteByPrimaryKey( configId );
+        StorageConfigDto configToUpdate = new StorageConfigDto();
+        configToUpdate.setName ( "" );
+        configToUpdate.setType( queryResult.getType().toString() );
+        switch (queryResult.getType()) {
+            case AWS:
+                configToUpdate.setAwsConfiguration( new S3Configuration() );
+                break;
+            case AZURE:
+                configToUpdate.setAzureConfiguration( new AzureConfiguration() );
+                break;
+            case LOCAL:
+                configToUpdate.setLocalConfiguration( new LocalConfiguration() );
+                break;
+        }
+
+        InsertOrUpdateConfiguration( configToUpdate );
+//        storageConfigDao.deleteByPrimaryKey( configId );
         StorageConfigUtil.eraseStorageConfiguration( configId );
     }
 
