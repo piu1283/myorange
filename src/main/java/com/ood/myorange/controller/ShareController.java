@@ -3,6 +3,10 @@ package com.ood.myorange.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.ShareFileDto;
+import com.ood.myorange.dto.UserInfo;
+import com.ood.myorange.dto.request.ShareFileRequest;
+import com.ood.myorange.exception.InvalidRequestException;
+import com.ood.myorange.pojo.UserFile;
 import com.ood.myorange.service.FileService;
 import com.ood.myorange.service.ShareFileService;
 import com.ood.myorange.util.RedisUtil;
@@ -14,7 +18,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * Created by Chen on 3/19/20.
+ * Created by Chen Chen on 3/19/20.
  */
 @RestController
 @Slf4j
@@ -32,51 +36,39 @@ public class ShareController {
     @Autowired
     ShareFileService shareFileService;
 
-//    @PutMapping("/shares")
-//    public ShareFileDto addShareFile(@RequestParam(value="file_id") int fileID, @RequestParam(value="deadline") Timestamp deadline,
-//                                     @RequestParam(value="limitDownloadTimes") int limitDownloadTimes, @RequestParam(value="hasPassword") boolean hasPassword){
-//        UserInfo userInfo = currentAccount.getUserInfo();
-//
-//        ShareFileDto result = shareFileService.addShareFile(fileID,deadline,limitDownloadTimes,hasPassword);
-//        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", fileID, deadline, limitDownloadTimes, hasPassword);
-//        log.info("Result: {}", result);
-//        return result;
-//    }
+    @PutMapping("/shares")
+    public ShareFileDto addShareFile(@RequestParam(value="fileId") int fileID, @RequestBody ShareFileRequest  shareFileRequest){
+        //check if file belong to this user
+        UserInfo userInfo = currentAccount.getUserInfo();
+        UserFile userFile=fileService.getUserFileById(fileID);
+        if(userInfo.getId()!=userFile.getUserId()){
+            throw new InvalidRequestException("This file is not belong to current user");
+        }
+        ShareFileDto result = shareFileService.addShareFile(fileID,shareFileRequest.getDeadline(),shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
+        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", fileID, shareFileRequest.getDeadline(), shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
+        return result;
+    }
 
     @GetMapping("/shares")
-    public List<ShareFileDto> getAllShareFile() throws JsonProcessingException {
+    public List<ShareFileDto> getAllShareFile(){
         return shareFileService.getAllShareFiles();
     }
 
     @GetMapping("/shares/{shareKey}")
-    public ShareFileDto getShareFileByShareKey(@PathVariable(value="shareKey") String shareKey) throws JsonProcessingException {
+    public ShareFileDto getShareFileByShareKey(@PathVariable(value="shareKey") String shareKey){
         return shareFileService.getShareFileByShareKey(shareKey);
     }
 
     @PostMapping("/shares/{shareId}")
-    public ShareFileDto updateShareFile(@PathVariable("shareId") int shareId,
-                                        @RequestParam(value="deadline") Timestamp deadline,
-                                        @RequestParam(value="limitDownloadTimes") int limitDownloadTimes,
-                                        @RequestParam(value="hasPassword") boolean hasPassword) throws JsonProcessingException{
-        return shareFileService.updateShareFile(shareId,deadline,limitDownloadTimes,hasPassword);
+    public ShareFileDto updateShareFile(@PathVariable("shareId") int shareId, @RequestBody ShareFileRequest shareFileRequest){
+        return shareFileService.updateShareFile(shareId,shareFileRequest.getDeadline(),shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
     }
 
     @DeleteMapping("/shares/{shareId}")
-    public void deleteShareFile(@PathVariable("shareId") int shareId) throws JsonProcessingException {
+    public void deleteShareFile(@PathVariable("shareId") int shareId){
         shareFileService.deleteShareFile(shareId);
     }
 
-//    // This just an example, you should return file detail instead of userDto
-//    @PostMapping("/share/{key}")
-//    public UserDto getShareFile(@PathVariable("key") String key) {
-//        String redisShareKey = RedisUtil.getRedisShareKey(key);
-//        Map<Object, Object> properties = redisUtil.getHashEntries(redisShareKey);
-//        if (properties == null || properties.isEmpty()) {
-//            log.warn("Invalid share key: {}", key);
-//            throw new ResourceNotFoundException("Invalid share key: " + key);
-//        }
-//        //... add rest logic
-//
-//        return new UserDto();
-//    }
+
+
 }
