@@ -8,18 +8,23 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ood.myorange.auth.CurrentAccount;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.config.storage.AzureConfiguration;
 import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageConfiguration;
 import com.ood.myorange.config.storage.StorageType;
+import com.ood.myorange.constant.enumeration.FileStatus;
 import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InternalServerError;
 import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.pojo.UserFile;
 import com.ood.myorange.service.DownloadService;
 import com.ood.myorange.service.FileService;
 import com.ood.myorange.service.StorageConfigService;
+import com.ood.myorange.util.AuthUtil;
 import com.ood.myorange.util.StorageConfigUtil;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +46,19 @@ public class DownloadServiceImpl implements DownloadService {
     @Autowired
     StorageConfigService storageConfigService;
 
+    @Autowired
+    ICurrentAccount currentAccount;
+
     @Override
     public PreSignedUrlResponse getPreSignedUrl(int fileId) throws JsonProcessingException {
         UserFile file = fileService.getUserFileById( fileId );
-        fileService.checkFile( file );
+
+        if(!file.getFileStatus().equals( FileStatus.SHARED )){
+            fileService.checkFile( file );
+            if ( !AuthUtil.canDownload( currentAccount.getUserInfo() ) ){
+                throw new ForbiddenException( "User does not have download permission" );
+            }
+        }
 
         // Get original file DTO
         OriginalFile originFile = fileService.getOriginalFileByFileId( file.getFileId() );
