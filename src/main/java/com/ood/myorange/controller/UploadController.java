@@ -8,6 +8,7 @@ import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -22,6 +23,7 @@ public class UploadController {
     UploadService uploadService;
 
     @GetMapping("/upload")
+    @PreAuthorize("hasAuthority('UPLOAD')")
     public PreSignedUrlResponse getPreSignedURL (
             @RequestBody FileUploadDto fileUploadDto
     ) throws JsonProcessingException {
