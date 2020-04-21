@@ -32,7 +32,7 @@ import javax.annotation.Resource;
  * Created by Chen on 3/17/20.
  */
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableRedisHttpSession
 @Configuration
 public class MultiHttpSecurityConfig {
