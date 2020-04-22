@@ -12,6 +12,7 @@ import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
 import com.ood.myorange.exception.InternalServerError;
+import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.service.*;
 import com.ood.myorange.util.NamingUtil;
 import com.ood.myorange.util.StorageConfigUtil;
@@ -151,8 +152,8 @@ public class UploadServiceImpl implements UploadService {
                 throw new InternalServerError( "Invalid storage type: " + storageType );
         }
 
-        fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
-        fileService.addUserFile( fileUploadDto,configId );
+        OriginalFile of = fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
+        fileService.addUserFile( fileUploadDto,of.getOriginId() );
     }
 
     private PreSignedUrlResponse AWSUpload(S3Configuration s3Configuration, String fileObjectName, String fileRealName) {
