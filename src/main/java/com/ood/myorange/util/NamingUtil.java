@@ -1,8 +1,13 @@
 package com.ood.myorange.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ood.myorange.pojo.UserFile;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.sql.Timestamp;
+import java.util.Random;
 
 /**
  * Created by Chen on 4/1/20.
