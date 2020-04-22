@@ -100,7 +100,6 @@ public class DownloadServiceImpl implements DownloadService {
 
         AmazonS3 s3Client = (AmazonS3) StorageConfigUtil.getStorageClient( StorageType.AWS );
         if (s3Client == null) {
-            StorageConfigDto storageConfigDto = new StorageConfigDto();
             StorageConfigUtil.insertStorageConfig( configId,"AWS",s3Configuration  );
         }
 
