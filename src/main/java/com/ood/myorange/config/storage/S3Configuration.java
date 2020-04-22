@@ -17,10 +17,10 @@ public class S3Configuration implements StorageConfiguration, java.io.Serializab
     private String awsBucketName;
 
     public S3Configuration() {
-        awsAccessKeyId = "Default";
-        awsSecretAccessKey = "Default";
-        awsRegion = "Default";
-        awsBucketName = "Default";
+        awsAccessKeyId = "";
+        awsSecretAccessKey = "";
+        awsRegion = "";
+        awsBucketName = "";
     }
 
     public S3Configuration(S3Configuration s3Config) {

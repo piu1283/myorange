@@ -104,7 +104,7 @@ CREATE TABLE `user_file` (
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
     `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time',
-    UNIQUE KEY `file_unique` (`dir_id`,`file_name`,`suffixes`,`user_id`)
+    UNIQUE KEY `file_unique` (`dir_id`,`file_name`,`suffixes`,`user_id`, `deleted`)
 ) COMMENT 'user file table';
 
 DROP TABLE IF EXISTS `user_dir`;

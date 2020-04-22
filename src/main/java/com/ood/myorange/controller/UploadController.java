@@ -25,8 +25,16 @@ public class UploadController {
     @GetMapping("/upload")
     @PreAuthorize("hasAuthority('UPLOAD')")
     public PreSignedUrlResponse getPreSignedURL (
-            @RequestBody FileUploadDto fileUploadDto
+            @RequestParam("fileName") String fileName,
+            @RequestParam("fileSize") Long fileSize,
+            @RequestParam("fileMD5") String fileMD5,
+            @RequestParam("dirId") Integer dirId
     ) throws JsonProcessingException {
+        FileUploadDto fileUploadDto = new FileUploadDto();
+        fileUploadDto.setName( fileName );
+        fileUploadDto.setSize( fileSize );
+        fileUploadDto.setMD5( fileMD5 );
+        fileUploadDto.setDirId( dirId );
         validateFileUploadDto( fileUploadDto );
         return uploadService.getPreSignedUrl( fileUploadDto );
     }

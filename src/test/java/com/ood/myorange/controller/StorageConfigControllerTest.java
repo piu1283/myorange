@@ -114,7 +114,7 @@ public class StorageConfigControllerTest {
         request = MockMvcRequestBuilders.get("/admin/config/storage");
         mockMvc.perform( request )
                 .andExpect( status().isOk() )
-                .andExpect( jsonPath( "$.result_data", hasSize( 1 ) ) )
+                .andExpect( jsonPath( "$.result_data", hasSize( 3 ) ) )
                 .andDo( print() );
 
         StorageConfigDto storageConfigRequest = new StorageConfigDto();
@@ -134,9 +134,9 @@ public class StorageConfigControllerTest {
                 .andExpect( status().isOk() )
                 .andDo( print() );
 
-        request = MockMvcRequestBuilders.get("/admin/config/storage/4");
+        request = MockMvcRequestBuilders.get("/admin/config/storage/1");
         mockMvc.perform( request ).andExpect( status().isOk() )
-                .andExpect( jsonPath("$.result_data.id", is(4) ))
+                .andExpect( jsonPath("$.result_data.id", is(1) ))
                 .andExpect( jsonPath("$.result_data.name", is("myS3_2.0") ))
                 .andExpect( jsonPath("$.result_data.type", is("AWS") ))
                 .andExpect( jsonPath("$.result_data.aws_configuration.aws_access_key_id", is("keyid2") ))
@@ -228,13 +228,11 @@ public class StorageConfigControllerTest {
 
         StorageConfig storageConfig = storageConfigDao.SelectSourceByType( StorageType.LOCAL );
 
-
         request = MockMvcRequestBuilders.get("/admin/config/storage");
         mockMvc.perform( request )
                 .andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.result_data", hasSize( 3 ) ) )
                 .andDo( print() );
-
 
         request = MockMvcRequestBuilders.get("/admin/config/storage/3");
         mockMvc.perform( request ).andExpect( status().isOk() )
@@ -255,6 +253,17 @@ public class StorageConfigControllerTest {
                 .andExpect( status().is4xxClientError() )
                 .andDo( print() );
 
+
+
+        request = MockMvcRequestBuilders.get("/admin/config/storage/3");
+        mockMvc.perform( request )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(3) ))
+                .andExpect( jsonPath("$.result_data.name", is("myLocal") ))
+                .andExpect( jsonPath("$.result_data.type", is("LOCAL") ))
+                .andExpect( jsonPath("$.result_data.local_configuration.local_path", is("/home/myorange/storage/v1") ))
+                .andDo( print() );
+
         request = MockMvcRequestBuilders.delete("/admin/config/storage/3");
         mockMvc.perform( request )
                 .andExpect( status().isOk() )
@@ -262,7 +271,23 @@ public class StorageConfigControllerTest {
 
         request = MockMvcRequestBuilders.get("/admin/config/storage/3");
         mockMvc.perform( request )
-                .andExpect( status().is4xxClientError() )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(3) ))
+                .andExpect( jsonPath("$.result_data.name", is("") ))
+                .andExpect( jsonPath("$.result_data.type", is("LOCAL") ))
+                .andExpect( jsonPath("$.result_data.local_configuration.local_path", is("/") ))
+                .andDo( print() );
+
+
+
+
+
+        request = MockMvcRequestBuilders.get("/admin/config/storage/2");
+        mockMvc.perform( request ).andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(2) ))
+                .andExpect( jsonPath("$.result_data.name", is("myAzure") ))
+                .andExpect( jsonPath("$.result_data.type", is("AZURE") ))
+                .andExpect( jsonPath("$.result_data.azure_configuration.azure_token", is("azureazure123456") ))
                 .andDo( print() );
 
         request = MockMvcRequestBuilders.delete("/admin/config/storage/2");
@@ -271,9 +296,30 @@ public class StorageConfigControllerTest {
                 .andDo( print() );
 
         request = MockMvcRequestBuilders.get("/admin/config/storage/2");
-        mockMvc.perform( request )
-                .andExpect( status().is4xxClientError() )
+        mockMvc.perform( request ).andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(2) ))
+                .andExpect( jsonPath("$.result_data.name", is("") ))
+                .andExpect( jsonPath("$.result_data.type", is("AZURE") ))
+                .andExpect( jsonPath("$.result_data.azure_configuration.azure_token", is("") ))
                 .andDo( print() );
+
+
+
+
+
+
+        request = MockMvcRequestBuilders.get("/admin/config/storage/1");
+        mockMvc.perform( request )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(1) ))
+                .andExpect( jsonPath("$.result_data.name", is("myS3") ))
+                .andExpect( jsonPath("$.result_data.type", is("AWS") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_access_key_id", is("keyid1") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_secret_access_key", is("accesskey1") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_region", is("us-east-2") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_bucket_name", is("my-bucket-glai-01") ))
+                .andDo( print() );
+
 
         request = MockMvcRequestBuilders.delete("/admin/config/storage/1");
         mockMvc.perform( request )
@@ -282,8 +328,16 @@ public class StorageConfigControllerTest {
 
         request = MockMvcRequestBuilders.get("/admin/config/storage/1");
         mockMvc.perform( request )
-                .andExpect( status().is4xxClientError() )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("$.result_data.id", is(1) ))
+                .andExpect( jsonPath("$.result_data.name", is("") ))
+                .andExpect( jsonPath("$.result_data.type", is("AWS") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_access_key_id", is("") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_secret_access_key", is("") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_region", is("") ))
+                .andExpect( jsonPath("$.result_data.aws_configuration.aws_bucket_name", is("") ))
                 .andDo( print() );
+
     }
 
     void testListOfConfig() throws Exception {
@@ -301,6 +355,10 @@ public class StorageConfigControllerTest {
                 .andExpect( jsonPath("$.result_data[1].name", is("myAzure") ))
                 .andExpect( jsonPath("$.result_data[1].type", is("AZURE") ))
                 .andExpect( jsonPath("$.result_data[1].azure_configuration.azure_token", is("azureazure123456") ))
+                .andExpect( jsonPath("$.result_data[2].id", is(3) ))
+                .andExpect( jsonPath("$.result_data[2].name", is("myLocal") ))
+                .andExpect( jsonPath("$.result_data[2].type", is("LOCAL") ))
+                .andExpect( jsonPath("$.result_data[2].local_configuration.local_path", is("/home/myorange/storage/v1") ))
                 .andDo( print() );
     }
 }
