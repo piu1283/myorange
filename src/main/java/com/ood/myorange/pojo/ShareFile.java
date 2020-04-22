@@ -12,23 +12,23 @@ import java.sql.Timestamp;
 
 /**
  * Created by Linkun on 4/13/20.
- *
+ * <p>
  * DROP TABLE IF EXISTS `t_share`;
  * CREATE TABLE `t_share` (
- *     `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
-// *     `user_id` INT(11) UNSIGNED NOT NULL COMMENT 'owner id',
-// *     `file_id` INT(11) UNSIGNED NOT NULL COMMENT 'shared file id',
-// *     `share_type` enum('NONEPWD', 'PWD') NOT NULL DEFAULT 'NONEPWD' COMMENT 'share type. [none password][password]',
-// *     `share_pass` VARCHAR(30) DEFAULT '' COMMENT 'password',
- *     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
- * 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
- * 	`download_count` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'download_count',
- * 	`download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
-// *     `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
-// *     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key',
-// *     `share_url` VARCHAR(225) DEFAULT '' COMMENT 'share url of front end',
- *     UNIQUE KEY `share_unique` (`user_id`,`file_id`),
- *     UNIQUE KEY `share_key_unique` (`share_key`)
+ * `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
+ * // *     `user_id` INT(11) UNSIGNED NOT NULL COMMENT 'owner id',
+ * // *     `file_id` INT(11) UNSIGNED NOT NULL COMMENT 'shared file id',
+ * // *     `share_type` enum('NONEPWD', 'PWD') NOT NULL DEFAULT 'NONEPWD' COMMENT 'share type. [none password][password]',
+ * // *     `share_pass` VARCHAR(30) DEFAULT '' COMMENT 'password',
+ * `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
+ * `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
+ * `download_count` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'download_count',
+ * `download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
+ * // *     `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
+ * // *     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key',
+ * // *     `share_url` VARCHAR(225) DEFAULT '' COMMENT 'share url of front end',
+ * UNIQUE KEY `share_unique` (`user_id`,`file_id`),
+ * UNIQUE KEY `share_key_unique` (`share_key`)
  * ) COMMENT 'share table';
  */
 @Data

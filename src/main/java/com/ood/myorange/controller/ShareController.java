@@ -37,39 +37,37 @@ public class ShareController {
     ShareFileService shareFileService;
 
     @PutMapping("/shares")
-    public ShareFileDto addShareFile(@RequestBody AddShareFileRequest addShareFileRequest){
-        //check if file belong to this user
-        UserFile userFile=fileService.getUserFileById(addShareFileRequest.getFileId());
+    public ShareFileDto addShareFile(@RequestBody AddShareFileRequest addShareFileRequest) {
+        UserFile userFile = fileService.getUserFileById(addShareFileRequest.getFileId());
         validateFileBelongToThisUser(userFile);
-        ShareFileDto result = shareFileService.addShareFile(addShareFileRequest.getFileId(),addShareFileRequest.getDeadline(),addShareFileRequest.getLimitDownloadTimes(),addShareFileRequest.getHasPassword());
-        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", addShareFileRequest.getFileId(), addShareFileRequest.getDeadline(), addShareFileRequest.getLimitDownloadTimes(),addShareFileRequest.getHasPassword());
+        ShareFileDto result = shareFileService.addShareFile(addShareFileRequest.getFileId(), addShareFileRequest.getDeadline(), addShareFileRequest.getLimitDownloadTimes(), addShareFileRequest.getHasPassword());
+        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", addShareFileRequest.getFileId(), addShareFileRequest.getDeadline(), addShareFileRequest.getLimitDownloadTimes(), addShareFileRequest.getHasPassword());
         return result;
     }
 
     @GetMapping("/shares")
-    public List<ShareFileDto> getAllShareFile(){
+    public List<ShareFileDto> getAllShareFile() {
         return shareFileService.getAllShareFiles();
     }
 
     @GetMapping("/shares/{key}")
-    public ShareFileDto getShareFileByShareKey(@PathVariable(value="key") String shareKey, @RequestParam(value = "password", defaultValue = "") String password){
-        return shareFileService.getShareFileByShareKey(shareKey,password);
+    public ShareFileDto getShareFileByShareKey(@PathVariable(value = "key") String shareKey, @RequestParam(value = "password", defaultValue = "") String password) {
+        return shareFileService.getShareFileByShareKey(shareKey, password);
     }
 
     @PostMapping("/shares/{id}")
-    public ShareFileDto updateShareFile(@PathVariable("id") int shareId, @RequestBody ShareFileRequest shareFileRequest){
-        return shareFileService.updateShareFile(shareId,shareFileRequest.getDeadline(),shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
+    public ShareFileDto updateShareFile(@PathVariable("id") int shareId, @RequestBody ShareFileRequest shareFileRequest) {
+        return shareFileService.updateShareFile(shareId, shareFileRequest.getDeadline(), shareFileRequest.getLimitDownloadTimes(), shareFileRequest.getHasPassword());
     }
 
     @DeleteMapping("/shares/{id}")
-    public void deleteShareFile(@PathVariable("id") int shareId){
+    public void deleteShareFile(@PathVariable("id") int shareId) {
         shareFileService.deleteShareFile(shareId);
     }
 
-    public void validateFileBelongToThisUser(UserFile userFile){
-        //check if file belong to this user
+    public void validateFileBelongToThisUser(UserFile userFile) {
         UserInfo userInfo = currentAccount.getUserInfo();
-        if(userInfo.getId()!=userFile.getUserId()){
+        if (userInfo.getId() != userFile.getUserId()) {
             throw new InvalidRequestException("This file is not belong to current user");
         }
     }

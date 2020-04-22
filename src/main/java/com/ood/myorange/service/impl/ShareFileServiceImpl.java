@@ -11,7 +11,6 @@ import com.ood.myorange.pojo.UserFile;
 import com.ood.myorange.service.FileService;
 import com.ood.myorange.service.ShareFileService;
 import com.ood.myorange.util.InternetIpUtil;
-import jdk.internal.org.objectweb.asm.tree.FrameNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,12 +48,8 @@ public class ShareFileServiceImpl implements ShareFileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public ShareFileDto getShareFileByShareKey(String shareKey, String password) {
-        // valid
-        // need password?
-        // if need, {password wrong or dont have(throw new forbiddenexception)},{normal output}
-        // {normal output}
         ShareFile shareFile = shareFileDao.SelectShareFileByShareKey(shareKey);
-        if(shareFile==null) throw new ResourceNotFoundException("share key not found");
+        if (shareFile == null) throw new ResourceNotFoundException("share key not found");
         if (shareFile.getShareType() == ShareType.PWD) {
             if (password == null || !shareFile.getSharePass().equals(password)) {
                 throw new ForbiddenException("wrong password or password not conveyed, forbidden to visit share file");
@@ -82,16 +77,14 @@ public class ShareFileServiceImpl implements ShareFileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteShareFile(int shareId) {
-        // 判断所属用户， 但是通过过期删除的不需要判断
-        ShareFile shareFile=shareFileDao.SelectShareFileByShareId(shareId);
-        if(shareFile==null) throw new ResourceNotFoundException("share id not found");
-        if(validateDeadline(shareId)) {
+        ShareFile shareFile = shareFileDao.SelectShareFileByShareId(shareId);
+        if (shareFile == null) throw new ResourceNotFoundException("share id not found");
+        if (validateDeadline(shareId)) {
             UserFile userFile = fileService.getUserFileById(shareFile.getFileID());
-            if(shareFile.getUserId()!=userFile.getUserId()){
+            if (shareFile.getUserId() != userFile.getUserId()) {
                 throw new ForbiddenException("fail to delete, this file not belong to this user");
             }
         }
-        // change file status
         fileService.changeFileStatus(shareFile.getFileID(), FileStatus.NORMAL);
         shareFileDao.deleteShareFile(shareId);
     }
@@ -99,26 +92,22 @@ public class ShareFileServiceImpl implements ShareFileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public ShareFileDto addShareFile(int fileID, Timestamp deadline, int limitDownloadTimes, boolean hasPassword) {
-        //check if file is already shared
-        //if yes, update and return exist data
         UserFile userFile = fileService.getUserFileById(fileID);
         if (userFile.getFileStatus() == FileStatus.SHARED) {
             ShareFile shareFile = shareFileDao.SelectShareFileByFileId(fileID);
             updateShareFile(shareFile.getId(), deadline, limitDownloadTimes, hasPassword);
             return mergeShareFileAndUserFileToShareFileDto(shareFile);
         }
-        //generate data and return
-        //update user file status
         fileService.changeFileStatus(userFile.getFileId(), FileStatus.SHARED);
         ShareType shareType = hasPassword ? ShareType.PWD : ShareType.NONEPWD;
         String sharePass = generateSharePass();
         String shareKey = generateShareKey(userFile);
         String ip = InternetIpUtil.INTERNET_IP;
         shareFileDao.insertShareFile(userFile.getUserId(), userFile.getFileId(), shareType, sharePass, deadline, shareKey, ip);
-        if(!hasPassword)
-        return getShareFileByShareKey(shareKey, "");
-        else{
-            ShareFile shareFile=shareFileDao.SelectShareFileByShareKey(shareKey);
+        if (!hasPassword)
+            return getShareFileByShareKey(shareKey, "");
+        else {
+            ShareFile shareFile = shareFileDao.SelectShareFileByShareKey(shareKey);
             return getShareFileByShareKey(shareKey, shareFile.getSharePass());
         }
     }
