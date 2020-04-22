@@ -80,3 +80,12 @@ VALUES("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA_3456324", "AAAAAAAAAAAAAAAAAAAAAAAAAAAA
 INSERT INTO `sys_config`(`class_id`,`config`)
 VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange098@gmail.com\",\"host\":\"smtp.gmail.com\",\"port\":587,\"password\":\"Myorange123\",\"sender\":\"mo\"}');
 
+
+-- share table
+INSERT INTO
+`t_share` (`user_id`,`file_id`,`share_type`,`share_pass`,`share_deadline`,`share_key`,`share_url`)
+VALUES
+(1, 3, "PWD", "1234", "2020-06-07 23:56:40", "ABCDEF", "192.168.1.159"),
+(1, 4, "PWD", "1234", "2020-02-07 23:56:40", "ABCABC", "192.168.1.159"),
+(1, 5, "NONEPWD", "1234", "2020-06-07 23:56:40", "DEFDEF", "192.168.1.159");
+
