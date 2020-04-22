@@ -51,7 +51,7 @@ public class ShareFileServiceImpl implements ShareFileService {
         ShareFile shareFile = shareFileDao.SelectShareFileByShareKey(shareKey);
         if (shareFile == null) throw new ResourceNotFoundException("share key not found");
         if (shareFile.getShareType() == ShareType.PWD) {
-            if (password == null || !shareFile.getSharePass().equals(password)) {
+            if (!shareFile.getSharePass().equals(password)) {
                 throw new ForbiddenException("wrong password or password not conveyed, forbidden to visit share file");
             }
         }
