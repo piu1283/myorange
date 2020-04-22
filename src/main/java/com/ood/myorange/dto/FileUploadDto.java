@@ -10,9 +10,9 @@ import lombok.ToString;
 @Data
 @ToString
 public class FileUploadDto {
-    private String name;
-    private Long size;
-    private String MD5;
+    private String fileName;
+    private Long fileSize;
+    private String fileMD5;
     private Integer dirId;
     private String uploadKey; // Only needed in the second upload request
 }
