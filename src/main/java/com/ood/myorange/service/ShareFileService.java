@@ -13,7 +13,7 @@ import java.util.List;
 public interface ShareFileService {
 
     List<ShareFileDto> getAllShareFiles();
-    ShareFileDto getShareFileByShareKey(String shareKey);
+    ShareFileDto getShareFileByShareKey(String shareKey,String password);
     ShareFileDto updateShareFile(int shareId,Timestamp deadline,int limitDownloadTimes,boolean hasPassword);
     void deleteShareFile(int shareId);
     ShareFileDto addShareFile(int fileID, Timestamp deadline, int limitDownloadTimes, boolean hasPassword);

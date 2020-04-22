@@ -1,9 +1,9 @@
 package com.ood.myorange.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.ShareFileDto;
 import com.ood.myorange.dto.UserInfo;
+import com.ood.myorange.dto.request.AddShareFileRequest;
 import com.ood.myorange.dto.request.ShareFileRequest;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.pojo.UserFile;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -22,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@RequestMapping("/api")
 public class ShareController {
 
     @Autowired
@@ -37,15 +37,12 @@ public class ShareController {
     ShareFileService shareFileService;
 
     @PutMapping("/shares")
-    public ShareFileDto addShareFile(@RequestParam(value="fileId") int fileID, @RequestBody ShareFileRequest  shareFileRequest){
+    public ShareFileDto addShareFile(@RequestBody AddShareFileRequest addShareFileRequest){
         //check if file belong to this user
-        UserInfo userInfo = currentAccount.getUserInfo();
-        UserFile userFile=fileService.getUserFileById(fileID);
-        if(userInfo.getId()!=userFile.getUserId()){
-            throw new InvalidRequestException("This file is not belong to current user");
-        }
-        ShareFileDto result = shareFileService.addShareFile(fileID,shareFileRequest.getDeadline(),shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
-        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", fileID, shareFileRequest.getDeadline(), shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
+        UserFile userFile=fileService.getUserFileById(addShareFileRequest.getFileId());
+        validateFileBelongToThisUser(userFile);
+        ShareFileDto result = shareFileService.addShareFile(addShareFileRequest.getFileId(),addShareFileRequest.getDeadline(),addShareFileRequest.getLimitDownloadTimes(),addShareFileRequest.getHasPassword());
+        log.info("Add share file, params: [fileID:{}, deadline:{}, limitDownloadTimes:{}, hasPassword:{}]", addShareFileRequest.getFileId(), addShareFileRequest.getDeadline(), addShareFileRequest.getLimitDownloadTimes(),addShareFileRequest.getHasPassword());
         return result;
     }
 
@@ -54,21 +51,27 @@ public class ShareController {
         return shareFileService.getAllShareFiles();
     }
 
-    @GetMapping("/shares/{shareKey}")
-    public ShareFileDto getShareFileByShareKey(@PathVariable(value="shareKey") String shareKey){
-        return shareFileService.getShareFileByShareKey(shareKey);
+    @GetMapping("/shares/{key}")
+    public ShareFileDto getShareFileByShareKey(@PathVariable(value="key") String shareKey, @RequestParam(value = "password", defaultValue = "") String password){
+        return shareFileService.getShareFileByShareKey(shareKey,password);
     }
 
-    @PostMapping("/shares/{shareId}")
-    public ShareFileDto updateShareFile(@PathVariable("shareId") int shareId, @RequestBody ShareFileRequest shareFileRequest){
+    @PostMapping("/shares/{id}")
+    public ShareFileDto updateShareFile(@PathVariable("id") int shareId, @RequestBody ShareFileRequest shareFileRequest){
         return shareFileService.updateShareFile(shareId,shareFileRequest.getDeadline(),shareFileRequest.getLimitDownloadTimes(),shareFileRequest.getHasPassword());
     }
 
-    @DeleteMapping("/shares/{shareId}")
-    public void deleteShareFile(@PathVariable("shareId") int shareId){
+    @DeleteMapping("/shares/{id}")
+    public void deleteShareFile(@PathVariable("id") int shareId){
         shareFileService.deleteShareFile(shareId);
     }
 
-
+    public void validateFileBelongToThisUser(UserFile userFile){
+        //check if file belong to this user
+        UserInfo userInfo = currentAccount.getUserInfo();
+        if(userInfo.getId()!=userFile.getUserId()){
+            throw new InvalidRequestException("This file is not belong to current user");
+        }
+    }
 
 }
