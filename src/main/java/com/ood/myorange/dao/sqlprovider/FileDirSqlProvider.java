@@ -109,7 +109,8 @@ public class FileDirSqlProvider {
     public String getAllFileIdUnderDir(int dirId){
         SQL sql = new SQL();
         sql.SELECT("u.file_id")
-                .FROM("user_file u LEFT JOIN "+TEMP_RESULT_TABLE_NAME+" t ON u.dir_id=t.dir_id");
+                .FROM("user_file u INNER JOIN "+TEMP_RESULT_TABLE_NAME+" t ON u.dir_id=t.dir_id");
+        System.out.println(getAllChildDirIncludeItself(dirId) + sql.toString());
         return getAllChildDirIncludeItself(dirId) + sql.toString();
     }
 
