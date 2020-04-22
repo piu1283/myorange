@@ -56,7 +56,12 @@ public class UploadServiceImpl implements UploadService {
         switch (storageType) {
             case AWS :
                 S3Configuration s3Configuration = (S3Configuration) StorageConfigUtil.getStorageConfiguration( configId );
-                preSignedUrlResponse = AWSUpload(s3Configuration, NamingUtil.generateOriginFileId(fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize())) );
+                preSignedUrlResponse = AWSUpload(
+                        s3Configuration,
+                        NamingUtil.generateOriginFileId(fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize())),
+                        fileUploadDto.getFileName()
+                );
+
                 break;
             case AZURE :
                 // TODO
@@ -150,7 +155,7 @@ public class UploadServiceImpl implements UploadService {
         fileService.addUserFile( fileUploadDto,configId );
     }
 
-    private PreSignedUrlResponse AWSUpload(S3Configuration s3Configuration, String fileObjectName) {
+    private PreSignedUrlResponse AWSUpload(S3Configuration s3Configuration, String fileObjectName, String fileRealName) {
         PreSignedUrlResponse preSignedUrlResponse = new PreSignedUrlResponse();
         try {
             AmazonS3 s3Client = (AmazonS3) StorageConfigUtil.getStorageClient( StorageType.AWS );
@@ -163,7 +168,7 @@ public class UploadServiceImpl implements UploadService {
             }
 
             String tempBucketName = AWSCreateTempBucket( s3Client,fileObjectName );
-            String preSignedURL = AWSGenerateURL( s3Client,tempBucketName,fileObjectName );
+            String preSignedURL = AWSGenerateURL( s3Client,tempBucketName,fileObjectName,fileRealName );
 
             log.info("AWS Upload Pre-Signed URL has been generated: " + preSignedURL );
             preSignedUrlResponse.setUploadUrl( preSignedURL );
@@ -221,7 +226,7 @@ public class UploadServiceImpl implements UploadService {
         return tempBucketName;
     }
 
-    private String AWSGenerateURL(AmazonS3 s3Client, String tempBucketName, String fileObjectName) {
+    private String AWSGenerateURL(AmazonS3 s3Client, String tempBucketName, String fileObjectName, String fileRealName) {
         // Set the pre-signed URL to expire after 60 seconds.
         java.util.Date expiration = new java.util.Date();
         long expTimeMillis = expiration.getTime();
@@ -232,7 +237,7 @@ public class UploadServiceImpl implements UploadService {
 //            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(storageConfigDto.getAwsBucketName(), fileObjectName)
 //                    .withMethod( HttpMethod.PUT)
 //                    .withExpiration(expiration);
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(tempBucketName, fileObjectName)
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(tempBucketName, fileRealName)
                 .withMethod( HttpMethod.PUT )
                 .withExpiration(expiration);
 
