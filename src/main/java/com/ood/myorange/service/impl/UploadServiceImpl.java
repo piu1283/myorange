@@ -95,10 +95,10 @@ public class UploadServiceImpl implements UploadService {
                         throw new InternalServerError( "Could not found the temp bucket, upload failed." );
                     }
 
-                    S3Object s3Object = s3Client.getObject( fileUploadDto.getUploadKey(),fileUploadDto.getName() );
+                    S3Object s3Object = s3Client.getObject( fileUploadDto.getUploadKey(),fileUploadDto.getFileName() );
                     s3Client.copyObject(
                             fileUploadDto.getUploadKey(),
-                            fileUploadDto.getName(),
+                            fileUploadDto.getFileName(),
                             s3Configuration.getAwsBucketName(),
                             NamingUtil.generateOriginFileId( fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize() ) )
                     );

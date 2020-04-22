@@ -121,7 +121,7 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public int addUserFile(FileUploadDto uploadDto, int originId) {
-        String fullName = uploadDto.getName();
+        String fullName = uploadDto.getFileName();
         String[] splitRes = NamingUtil.splitFileName(fullName);
         String fileName = splitRes[0];
         String suffixes = splitRes[1];
