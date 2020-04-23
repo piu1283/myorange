@@ -55,7 +55,7 @@ public class ShareFileServiceImpl implements ShareFileService {
                 throw new ForbiddenException("wrong password or password not conveyed, forbidden to visit share file");
             }
         }
-        if (validateDeadline(shareFile.getId())) {
+        if (validateDeadline(shareFile)) {
             return mergeShareFileAndUserFileToShareFileDto(shareFile);
         } else {
             //deadline expire
@@ -79,9 +79,9 @@ public class ShareFileServiceImpl implements ShareFileService {
     public void deleteShareFile(int shareId) {
         ShareFile shareFile = shareFileDao.SelectShareFileByShareId(shareId);
         if (shareFile == null) throw new ResourceNotFoundException("share id not found");
-        if (validateDeadline(shareId)) {
+        if (validateDeadline(shareFile)) {
             UserFile userFile = fileService.getUserFileById(shareFile.getFileID());
-            if (shareFile.getUserId() != userFile.getUserId()) {
+            if (shareFile.getUserId().equals(userFile.getUserId())) {
                 throw new ForbiddenException("fail to delete, this file not belong to this user");
             }
         }
@@ -129,15 +129,12 @@ public class ShareFileServiceImpl implements ShareFileService {
         shareFileDto.setSize(userFile.getFileSize());
         shareFileDto.setShareKey(sf.getShareKey());
         shareFileDto.setType(userFile.getFileType());
-        shareFileDto.setShareIp(sf.getShareUrl());
+        shareFileDto.setShareUrl(sf.getShareUrl());
         return shareFileDto;
     }
 
-    public boolean validateDeadline(Integer shareId) {
-        if (shareFileDao.SelectShareFileIfDeadlineNotExpired(shareId) == null) {
-            return false;
-        } else
-            return true;
+    public boolean validateDeadline(ShareFile share) {
+        return share.getShareDeadline().getTime() >= System.currentTimeMillis();
     }
 
     public String generateSharePass() {

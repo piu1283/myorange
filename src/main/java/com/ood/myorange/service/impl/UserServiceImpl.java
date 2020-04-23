@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(AdminUserDto adminUserDto) {
         // generate password
-        String pass = RandomStringUtils.random(6);
+        String pass = RandomStringUtils.random(6, true, true);
         String passAfterEncode = PasswordUtil.encodePassword(pass);
         // check email
         User user  = userDao.getUserByEmail(adminUserDto.getEmail());

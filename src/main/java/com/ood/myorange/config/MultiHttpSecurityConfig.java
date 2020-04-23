@@ -126,6 +126,8 @@ public class MultiHttpSecurityConfig {
                     .csrf().disable().antMatcher("/api/**")
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                     .and()
+                    .authorizeRequests().antMatchers("/api/d/**").permitAll()
+                    .and()
                     .authorizeRequests()
                     .antMatchers("/api/**").hasRole(RoleConstant.USER.toString())
                     .and()

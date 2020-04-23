@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShareFileDto {
-    private String shareIp;
+    private String shareUrl;
     private int shareId;
     private int fileId;
     private String name;

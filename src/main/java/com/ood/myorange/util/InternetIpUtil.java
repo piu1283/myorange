@@ -9,16 +9,16 @@ import java.util.Enumeration;
  * Created by Linkun.
  */
 public class InternetIpUtil {
-    public static String INTRANET_IP = getIntranetIp(); // 内网IP
-    public static String INTERNET_IP = getInternetIp(); // 外网IP
+    public static String INTRANET_IP = getInternalIp();
+    public static String INTERNET_IP = getInternetIp();
 
     private InternetIpUtil(){}
 
     /**
-     * 获得内网IP
-     * @return 内网IP
+     * get internal IP
+     * @return ip
      */
-    private static String getIntranetIp(){
+    private static String getInternalIp(){
         try{
             return InetAddress.getLocalHost().getHostAddress();
         } catch(Exception e){
@@ -27,7 +27,7 @@ public class InternetIpUtil {
     }
 
     /**
-     * 获得外网IP
+     * Get internet Ip
      * @return 外网IP
      */
     private static String getInternetIp(){
