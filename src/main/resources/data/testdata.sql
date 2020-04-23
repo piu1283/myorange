@@ -55,7 +55,7 @@ VALUES
 (
     'myS3',
     'AWS',
-    '{"aws_access_key_id": "keyid1","aws_secret_access_key" : "accesskey1","aws_region" : "us-east-2","aws_bucket_name" : "my-bucket-glai-01"}'
+    '{"aws_access_key_id": "AKIAUIHAYCXRZ3RDTMT3","aws_secret_access_key" : "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","aws_region" : "us-east-2","aws_bucket_name" : "my-bucket-glai-01"}'
 ),
 (
     'myAzure',
@@ -65,8 +65,9 @@ VALUES
 (
     'myLocal',
     'LOCAL',
-    '{\"local_path\" : \"/home/myorange/storage/v1\"}'
+    '{"local_path" : "/home/myorange/storage/v1"}'
 );
+
 
 -- original file
 INSERT INTO `origin_file`(`origin_file_id`,`file_md5`,`file_size`,`file_count`,`source_id`)

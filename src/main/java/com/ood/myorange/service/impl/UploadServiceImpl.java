@@ -46,8 +46,8 @@ public class UploadServiceImpl implements UploadService {
         boolean originalFileExist = fileService.checkOriginFileExist( fileUploadDto,configId );
         if (originalFileExist) {
             PreSignedUrlResponse preSignedUrlResponse = new PreSignedUrlResponse();
-            fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
-            fileService.addUserFile( fileUploadDto,configId );
+            OriginalFile of = fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
+            fileService.addUserFile( fileUploadDto,of.getOriginId() );
             return preSignedUrlResponse;
         }
 
