@@ -4,6 +4,7 @@ import com.ood.myorange.config.BaseDao;
 import com.ood.myorange.pojo.User;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.util.List;
 
@@ -28,4 +29,12 @@ public interface UserDao extends BaseDao<User> {
      */
     @Update("UPDATE `t_user` SET `deleted`=true WHERE `id`=#{userId}")
     void deleteUser(int userId);
+
+    /**
+     * update used size
+     * @param userId
+     * @param size
+     */
+    @Update("UPDATE `t_user` SET `used_size`=#{size} WHERE `id`=#{userId}")
+    void updateUsedSize(int userId, Long size);
 }

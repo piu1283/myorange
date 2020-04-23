@@ -18,7 +18,7 @@ public class FilesDto {
     private String size;
     private FileType type;
     private String suffixes;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone="GMT-5")
     private Timestamp createDate;
 
 }

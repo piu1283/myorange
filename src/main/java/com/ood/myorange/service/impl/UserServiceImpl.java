@@ -52,6 +52,16 @@ public class UserServiceImpl implements UserService {
     ICurrentAccount currentAccount;
 
     @Override
+    public User getUserById(int userId) {
+        return userDao.selectByPrimaryKey(new User(userId));
+    }
+
+    @Override
+    public void increaseUsedSize(int userId, Long size) {
+        userDao.updateUsedSize(userId,size);
+    }
+
+    @Override
     public List<AdminUserDto> getAllAdminUser() {
         // get all user
         List<User> users = userDao.getUsers();
@@ -131,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(AdminUserDto adminUserDto) {
         // generate password
-        String pass = RandomStringUtils.random(6);
+        String pass = RandomStringUtils.random(6, true, true);
         String passAfterEncode = PasswordUtil.encodePassword(pass);
         // check email
         User user  = userDao.getUserByEmail(adminUserDto.getEmail());

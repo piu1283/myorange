@@ -11,14 +11,17 @@ import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InternalServerError;
 import com.ood.myorange.pojo.OriginalFile;
+import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.*;
 import com.ood.myorange.util.NamingUtil;
 import com.ood.myorange.util.StorageConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +41,19 @@ public class UploadServiceImpl implements UploadService {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    UserService userService;
+
     @Override
+    @Transactional
     public PreSignedUrlResponse getPreSignedUrl(FileUploadDto fileUploadDto) throws JsonProcessingException {
         int configId = currentAccount.getUserInfo().getSourceId();
-
+        // check used size
+        User user = userService.getUserById(currentAccount.getUserInfo().getId());
+        if (user.getMemorySize() < user.getUsedSize() + fileUploadDto.getSize()) {
+            throw new ForbiddenException("you are running out of space");
+        }
+        userService.increaseUsedSize(user.getId(), user.getUsedSize() + fileUploadDto.getSize());
         // Check duplicate
         boolean originalFileExist = fileService.checkOriginFileExist( fileUploadDto,configId );
         if (originalFileExist) {
@@ -82,6 +94,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
+    @Transactional
     public void uploadFinished(FileUploadDto fileUploadDto) throws JsonProcessingException {
         int configId = currentAccount.getUserInfo().getSourceId();
         StorageType storageType = StorageConfigUtil.getStorageConfigurationType( configId );
