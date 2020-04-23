@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             // add other logic
             List<String> permissionList = permissionMap.get(user.getId());
-            StorageConfigDto configDto = configDtoMap.get(user.getId());
+            StorageConfigDto configDto = configDtoMap.get(user.getSourceId());
             res.add(mapUserToAdminUserDto(user, permissionList, configDto));
         }
         return res;

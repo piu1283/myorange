@@ -1,10 +1,13 @@
 package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.UploadService;
+import com.ood.myorange.util.AuthUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +26,19 @@ public class UploadController {
     @Autowired
     UploadService uploadService;
 
+    @Autowired
+    ICurrentAccount currentAccount;
+
     @GetMapping("/upload")
-    @PreAuthorize("hasAuthority('UPLOAD')")
     public PreSignedUrlResponse getPreSignedURL (
             @RequestParam("fileName") String fileName,
             @RequestParam("fileSize") Long fileSize,
             @RequestParam("fileMD5") String fileMD5,
             @RequestParam("dirId") Integer dirId
     ) throws JsonProcessingException {
+        if (!AuthUtil.canUpload(currentAccount.getUserInfo())) {
+            throw new ForbiddenException("you have no upload permission");
+        }
         FileUploadDto fileUploadDto = new FileUploadDto();
         fileUploadDto.setFileName( fileName );
         fileUploadDto.setSize( fileSize );
@@ -41,10 +49,13 @@ public class UploadController {
     }
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAuthority('UPLOAD')")
+//    @PreAuthorize("hasAuthority('UPLOAD')")
     public void uploadFinished(
             @RequestBody FileUploadDto fileUploadDto
     ) throws JsonProcessingException {
+        if (!AuthUtil.canUpload(currentAccount.getUserInfo())) {
+            throw new ForbiddenException("you have no upload permission");
+        }
         validateFileUploadDto( fileUploadDto,false );
         uploadService.uploadFinished( fileUploadDto );
     }
