@@ -2,6 +2,7 @@ package com.ood.myorange.dao.sqlprovider;
 
 import com.ood.myorange.constant.enumeration.FileType;
 import com.ood.myorange.pojo.OriginalFile;
+import com.ood.myorange.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -88,7 +89,7 @@ public class FileDirSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("user_file AS u, t_user AS t")
                 .SET("u.deleted=true")
-                .SET("u.delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
+                .SET("u.delete_time='" + TimeUtil.getCurrentTimeStamp() + "'")
                 .SET("t.used_size=IF((cast(t.used_size as signed)-cast(u.file_size as signed))>=0, t.used_size - u.file_size, 0)")
                 .WHERE("u.user_id=t.id")
                 .AND()
@@ -100,7 +101,7 @@ public class FileDirSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("user_file AS u, t_user AS t")
                 .SET("u.deleted=true")
-                .SET("u.delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
+                .SET("u.delete_time='" + TimeUtil.getCurrentTimeStamp() + "'")
                 .SET("t.used_size=IF((cast(t.used_size as signed)-cast(u.file_size as signed))>=0, t.used_size - u.file_size, 0)")
                 .WHERE("u.file_id=#{fileId}");
         return sql.toString();
@@ -119,7 +120,7 @@ public class FileDirSqlProvider {
         SQL sql = new SQL();
         sql.UPDATE("user_file")
                 .SET("deleted=true")
-                .SET("delete_time='" + new Timestamp(System.currentTimeMillis()) + "'")
+                .SET("delete_time='" + TimeUtil.getCurrentTimeStamp() + "'")
                 .WHERE("file_id in (" + StringUtils.join(fileIds, ",") + ")");
         return sql.toString();
     }

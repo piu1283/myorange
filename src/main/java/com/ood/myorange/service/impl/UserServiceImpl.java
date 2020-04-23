@@ -52,6 +52,16 @@ public class UserServiceImpl implements UserService {
     ICurrentAccount currentAccount;
 
     @Override
+    public User getUserById(int userId) {
+        return userDao.selectByPrimaryKey(new User(userId));
+    }
+
+    @Override
+    public void increaseUsedSize(int userId, Long size) {
+        userDao.updateUsedSize(userId,size);
+    }
+
+    @Override
     public List<AdminUserDto> getAllAdminUser() {
         // get all user
         List<User> users = userDao.getUsers();
