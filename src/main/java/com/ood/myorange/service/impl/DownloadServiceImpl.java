@@ -116,7 +116,6 @@ public class DownloadServiceImpl implements DownloadService {
             GeneratePresignedUrlRequest generatePresignedUrlRequest =
                     new GeneratePresignedUrlRequest( s3Configuration.getAwsBucketName(), fileObjectName )
                             .withMethod( HttpMethod.GET )
-                            .withResponseHeaders( headerOverrides )
                             .withExpiration( expireDate );
             URL url = s3Client.generatePresignedUrl( generatePresignedUrlRequest );
             preSignedUrlResponse.setDownloadUrl( url.toString() );
