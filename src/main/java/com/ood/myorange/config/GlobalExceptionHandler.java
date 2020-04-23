@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {ForbiddenException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public BaseResponse ForbiddenExceptionExceptionHandler(ForbiddenException ex) {
         log.error("Exception:: ", ex);
         return BaseResponse.failure(ex.getMessage());
