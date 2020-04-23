@@ -1,5 +1,6 @@
 package com.ood.myorange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -10,7 +11,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class FileUploadDto {
-    private String name;
+    private String fileName;
     private Long size;
     private String MD5;
     private Integer dirId;

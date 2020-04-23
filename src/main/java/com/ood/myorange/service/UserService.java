@@ -10,6 +10,13 @@ import java.util.List;
  * Created by Chen on 2/24/20.
  */
 public interface UserService {
+
+    User getUserById(int userId);
+
+    /**
+     * increase user used size
+     */
+    void increaseUsedSize(int userId, Long size);
     /**
      * get all user dto in admin aspect format
      * @return

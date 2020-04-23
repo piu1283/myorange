@@ -1,6 +1,7 @@
 package com.ood.myorange.config;
 
 import com.ood.myorange.dto.response.BaseResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,13 @@ public class GlobalExceptionHandler {
         return BaseResponse.failure(ex.getMessage(), ex.getData());
     }
 
+    @ExceptionHandler(value = {ForbiddenException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public BaseResponse ForbiddenExceptionExceptionHandler(ForbiddenException ex) {
+        log.error("Exception:: ", ex);
+        return BaseResponse.failure(ex.getMessage());
+    }
+
     @ExceptionHandler(value = { NoHandlerFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse noHandlerFoundExceptionHandler(Exception ex) {
@@ -75,7 +83,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse NullPointerExceptionExceptionHandler(Exception ex) {
         log.error("Exception:: ", ex);
-        return BaseResponse.failure(ex.getMessage());
+        return BaseResponse.failure("Internal error.");
     }
 
     @ExceptionHandler(value = {DataAccessException.class})

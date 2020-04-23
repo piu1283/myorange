@@ -1,13 +1,18 @@
 package com.ood.myorange.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.dto.FileUploadDto;
-import com.ood.myorange.dto.StorageConfigDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.service.UploadService;
+import com.ood.myorange.util.AuthUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -21,27 +26,45 @@ public class UploadController {
     @Autowired
     UploadService uploadService;
 
+    @Autowired
+    ICurrentAccount currentAccount;
+
     @GetMapping("/upload")
     public PreSignedUrlResponse getPreSignedURL (
-            @RequestBody FileUploadDto fileUploadDto
+            @RequestParam("fileName") String fileName,
+            @RequestParam("fileSize") Long fileSize,
+            @RequestParam("fileMD5") String fileMD5,
+            @RequestParam("dirId") Integer dirId
     ) throws JsonProcessingException {
-        validateFileUploadDto( fileUploadDto );
+        if (!AuthUtil.canUpload(currentAccount.getUserInfo())) {
+            throw new ForbiddenException("you have no upload permission");
+        }
+        FileUploadDto fileUploadDto = new FileUploadDto();
+        fileUploadDto.setFileName( fileName );
+        fileUploadDto.setSize( fileSize );
+        fileUploadDto.setMD5( fileMD5 );
+        fileUploadDto.setDirId( dirId );
+        validateFileUploadDto( fileUploadDto,true );
         return uploadService.getPreSignedUrl( fileUploadDto );
     }
 
     @PostMapping("/upload")
+//    @PreAuthorize("hasAuthority('UPLOAD')")
     public void uploadFinished(
             @RequestBody FileUploadDto fileUploadDto
     ) throws JsonProcessingException {
-        validateFileUploadDto( fileUploadDto );
+        if (!AuthUtil.canUpload(currentAccount.getUserInfo())) {
+            throw new ForbiddenException("you have no upload permission");
+        }
+        validateFileUploadDto( fileUploadDto,false );
         uploadService.uploadFinished( fileUploadDto );
     }
 
-    private void validateFileUploadDto(FileUploadDto fileUploadDto) {
+    private void validateFileUploadDto(FileUploadDto fileUploadDto, boolean firstTime) {
         if (fileUploadDto.getSize() <= 0) { throw new InvalidRequestException( "Invalid file size: " + fileUploadDto.getSize()); }
         if (fileUploadDto.getMD5().length() != 32) { throw new InvalidRequestException( "Invalid file md5: " + fileUploadDto.getMD5()); }
-        if (fileUploadDto.getName().isEmpty()) { throw new InvalidRequestException( "Invalid file name: " + fileUploadDto.getName()); }
+        if (fileUploadDto.getFileName().isEmpty()) { throw new InvalidRequestException( "Invalid file name: " + fileUploadDto.getFileName()); }
         if (fileUploadDto.getDirId() < 0) { throw new InvalidRequestException( "Invalid dirID: " + fileUploadDto.getDirId()); }
-
+        if (!firstTime && StringUtils.isBlank( fileUploadDto.getUploadKey() ) ) { throw new InvalidRequestException( "Invalid uploadKey: " + fileUploadDto.getUploadKey()); }
     }
 }

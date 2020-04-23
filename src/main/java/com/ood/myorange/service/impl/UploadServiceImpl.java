@@ -11,13 +11,17 @@ import com.ood.myorange.config.storage.S3Configuration;
 import com.ood.myorange.config.storage.StorageType;
 import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.response.PreSignedUrlResponse;
+import com.ood.myorange.exception.ForbiddenException;
 import com.ood.myorange.exception.InternalServerError;
+import com.ood.myorange.pojo.OriginalFile;
+import com.ood.myorange.pojo.User;
 import com.ood.myorange.service.*;
 import com.ood.myorange.util.NamingUtil;
 import com.ood.myorange.util.StorageConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,16 +41,25 @@ public class UploadServiceImpl implements UploadService {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    UserService userService;
+
     @Override
+    @Transactional
     public PreSignedUrlResponse getPreSignedUrl(FileUploadDto fileUploadDto) throws JsonProcessingException {
         int configId = currentAccount.getUserInfo().getSourceId();
-
+        // check used size
+        User user = userService.getUserById(currentAccount.getUserInfo().getId());
+        if (user.getMemorySize() < user.getUsedSize() + fileUploadDto.getSize()) {
+            throw new ForbiddenException("you are running out of space");
+        }
+        userService.increaseUsedSize(user.getId(), user.getUsedSize() + fileUploadDto.getSize());
         // Check duplicate
         boolean originalFileExist = fileService.checkOriginFileExist( fileUploadDto,configId );
         if (originalFileExist) {
             PreSignedUrlResponse preSignedUrlResponse = new PreSignedUrlResponse();
-            fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
-            fileService.addUserFile( fileUploadDto,configId );
+            OriginalFile of = fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
+            fileService.addUserFile( fileUploadDto,of.getOriginId() );
             return preSignedUrlResponse;
         }
 
@@ -56,7 +69,12 @@ public class UploadServiceImpl implements UploadService {
         switch (storageType) {
             case AWS :
                 S3Configuration s3Configuration = (S3Configuration) StorageConfigUtil.getStorageConfiguration( configId );
-                preSignedUrlResponse = AWSUpload(s3Configuration, NamingUtil.generateOriginFileId(fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize())) );
+                preSignedUrlResponse = AWSUpload(
+                        s3Configuration,
+                        NamingUtil.generateOriginFileId(fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize())),
+                        fileUploadDto.getFileName()
+                );
+
                 break;
             case AZURE :
                 // TODO
@@ -76,6 +94,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
+    @Transactional
     public void uploadFinished(FileUploadDto fileUploadDto) throws JsonProcessingException {
         int configId = currentAccount.getUserInfo().getSourceId();
         StorageType storageType = StorageConfigUtil.getStorageConfigurationType( configId );
@@ -95,10 +114,10 @@ public class UploadServiceImpl implements UploadService {
                         throw new InternalServerError( "Could not found the temp bucket, upload failed." );
                     }
 
-                    S3Object s3Object = s3Client.getObject( fileUploadDto.getUploadKey(),fileUploadDto.getName() );
+                    S3Object s3Object = s3Client.getObject( fileUploadDto.getUploadKey(),fileUploadDto.getFileName() );
                     s3Client.copyObject(
                             fileUploadDto.getUploadKey(),
-                            fileUploadDto.getName(),
+                            fileUploadDto.getFileName(),
                             s3Configuration.getAwsBucketName(),
                             NamingUtil.generateOriginFileId( fileUploadDto.getMD5(),String.valueOf( fileUploadDto.getSize() ) )
                     );
@@ -146,11 +165,11 @@ public class UploadServiceImpl implements UploadService {
                 throw new InternalServerError( "Invalid storage type: " + storageType );
         }
 
-        fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
-        fileService.addUserFile( fileUploadDto,configId );
+        OriginalFile of = fileService.InsertOrUpdateOriginFile( fileUploadDto,configId );
+        fileService.addUserFile( fileUploadDto,of.getOriginId() );
     }
 
-    private PreSignedUrlResponse AWSUpload(S3Configuration s3Configuration, String fileObjectName) {
+    private PreSignedUrlResponse AWSUpload(S3Configuration s3Configuration, String fileObjectName, String fileRealName) {
         PreSignedUrlResponse preSignedUrlResponse = new PreSignedUrlResponse();
         try {
             AmazonS3 s3Client = (AmazonS3) StorageConfigUtil.getStorageClient( StorageType.AWS );
@@ -163,7 +182,7 @@ public class UploadServiceImpl implements UploadService {
             }
 
             String tempBucketName = AWSCreateTempBucket( s3Client,fileObjectName );
-            String preSignedURL = AWSGenerateURL( s3Client,tempBucketName,fileObjectName );
+            String preSignedURL = AWSGenerateURL( s3Client,tempBucketName,fileObjectName,fileRealName );
 
             log.info("AWS Upload Pre-Signed URL has been generated: " + preSignedURL );
             preSignedUrlResponse.setUploadUrl( preSignedURL );
@@ -221,7 +240,7 @@ public class UploadServiceImpl implements UploadService {
         return tempBucketName;
     }
 
-    private String AWSGenerateURL(AmazonS3 s3Client, String tempBucketName, String fileObjectName) {
+    private String AWSGenerateURL(AmazonS3 s3Client, String tempBucketName, String fileObjectName, String fileRealName) {
         // Set the pre-signed URL to expire after 60 seconds.
         java.util.Date expiration = new java.util.Date();
         long expTimeMillis = expiration.getTime();
@@ -232,7 +251,7 @@ public class UploadServiceImpl implements UploadService {
 //            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(storageConfigDto.getAwsBucketName(), fileObjectName)
 //                    .withMethod( HttpMethod.PUT)
 //                    .withExpiration(expiration);
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(tempBucketName, fileObjectName)
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(tempBucketName, fileRealName)
                 .withMethod( HttpMethod.PUT )
                 .withExpiration(expiration);
 

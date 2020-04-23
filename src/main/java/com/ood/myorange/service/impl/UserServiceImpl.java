@@ -1,6 +1,6 @@
 package com.ood.myorange.service.impl;
 
-import com.ood.myorange.auth.CurrentAccount;
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.constant.PermissionConstant;
 import com.ood.myorange.constant.enumeration.Gender;
 import com.ood.myorange.dao.UserDao;
@@ -49,7 +49,17 @@ public class UserServiceImpl implements UserService {
     MailSenderService mailSenderService;
 
     @Autowired
-    CurrentAccount currentAccount;
+    ICurrentAccount currentAccount;
+
+    @Override
+    public User getUserById(int userId) {
+        return userDao.selectByPrimaryKey(new User(userId));
+    }
+
+    @Override
+    public void increaseUsedSize(int userId, Long size) {
+        userDao.updateUsedSize(userId,size);
+    }
 
     @Override
     public List<AdminUserDto> getAllAdminUser() {
@@ -65,7 +75,7 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             // add other logic
             List<String> permissionList = permissionMap.get(user.getId());
-            StorageConfigDto configDto = configDtoMap.get(user.getId());
+            StorageConfigDto configDto = configDtoMap.get(user.getSourceId());
             res.add(mapUserToAdminUserDto(user, permissionList, configDto));
         }
         return res;
@@ -105,8 +115,8 @@ public class UserServiceImpl implements UserService {
             else
                 removePermissionList.add(PermissionConstant.DOWNLOAD.toString());
         }
-        if (adminUserDto.getDownloadAccess() != null) {
-            if (adminUserDto.getDownloadAccess())
+        if (adminUserDto.getUploadAccess() != null) {
+            if (adminUserDto.getUploadAccess())
                 obtainPermissionList.add(PermissionConstant.UPLOAD.toString());
             else
                 removePermissionList.add(PermissionConstant.UPLOAD.toString());
@@ -131,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(AdminUserDto adminUserDto) {
         // generate password
-        String pass = RandomStringUtils.random(6);
+        String pass = RandomStringUtils.random(6, true, true);
         String passAfterEncode = PasswordUtil.encodePassword(pass);
         // check email
         User user  = userDao.getUserByEmail(adminUserDto.getEmail());

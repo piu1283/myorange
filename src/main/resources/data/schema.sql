@@ -76,7 +76,7 @@ CREATE TABLE `t_share` (
     `id` INT(11) auto_increment PRIMARY KEY  COMMENT 'id',
     `user_id` INT(11) UNSIGNED NOT NULL COMMENT 'owner id',
     `file_id` INT(11) UNSIGNED NOT NULL COMMENT 'shared file id',
-    `share_type` enum('public', 'pwd') NOT NULL DEFAULT 'public' COMMENT 'share type. [public][password]',
+    `share_type` enum('NONEPWD', 'PWD') NOT NULL DEFAULT 'NONEPWD' COMMENT 'share type. [none password][password]',
     `share_pass` VARCHAR(30) DEFAULT '' COMMENT 'password',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
 	`modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
@@ -84,7 +84,7 @@ CREATE TABLE `t_share` (
 	`download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
     `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key',
-    `share_url` VARCHAR(225) NOT NULL COMMENT 'share url of front end',
+    `share_url` VARCHAR(225) DEFAULT '' COMMENT 'share url of front end',
     UNIQUE KEY `share_unique` (`user_id`,`file_id`),
     UNIQUE KEY `share_key_unique` (`share_key`)
 ) COMMENT 'share table';
@@ -104,7 +104,7 @@ CREATE TABLE `user_file` (
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create_time',
     `modify_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify_time',
     `delete_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'delete time',
-    UNIQUE KEY `file_unique` (`dir_id`,`file_name`,`suffixes`,`user_id`)
+    UNIQUE KEY `file_unique` (`dir_id`,`file_name`,`suffixes`,`user_id`, `deleted`)
 ) COMMENT 'user file table';
 
 DROP TABLE IF EXISTS `user_dir`;

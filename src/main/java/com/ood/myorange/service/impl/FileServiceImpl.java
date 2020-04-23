@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -97,13 +98,14 @@ public class FileServiceImpl implements FileService {
         userFileDao.deleteFile(fileId);
     }
 
-    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteFileUnderDirAndItsChildren(int dirId) {
         int userId = currentAccount.getUserInfo().getId();
         List<Integer> fileIds = userFileDao.getAllFileIdUnderDir(dirId);
-        userFileDao.deleteFilesByFileIds(fileIds);
-        userFileDao.updateUsedSizeDecreaseByFileIds(fileIds, userId);
+        if (!CollectionUtils.isEmpty(fileIds)) {
+            userFileDao.deleteFilesByFileIds(fileIds);
+            userFileDao.updateUsedSizeDecreaseByFileIds(fileIds, userId);
+        }
     }
 
     @Override
@@ -119,7 +121,7 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public int addUserFile(FileUploadDto uploadDto, int originId) {
-        String fullName = uploadDto.getName();
+        String fullName = uploadDto.getFileName();
         String[] splitRes = NamingUtil.splitFileName(fullName);
         String fileName = splitRes[0];
         String suffixes = splitRes[1];
