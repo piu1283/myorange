@@ -11,6 +11,7 @@ import com.ood.myorange.pojo.UserFile;
 import com.ood.myorange.service.FileService;
 import com.ood.myorange.service.ShareFileService;
 import com.ood.myorange.util.InternetIpUtil;
+import com.ood.myorange.util.ShareUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,7 +130,9 @@ public class ShareFileServiceImpl implements ShareFileService {
         shareFileDto.setSize(userFile.getFileSize());
         shareFileDto.setShareKey(sf.getShareKey());
         shareFileDto.setType(userFile.getFileType());
-        shareFileDto.setShareUrl(sf.getShareUrl());
+        // add share url logic
+        String shareUrl = ShareUtil.generateShareUrl(sf.getShareKey());
+        shareFileDto.setShareUrl(shareUrl);
         return shareFileDto;
     }
 
