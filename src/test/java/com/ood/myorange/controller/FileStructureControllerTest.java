@@ -142,9 +142,13 @@ class FileStructureControllerTest {
         RequestBuilder request = null;
         FilesDto filesDto = new FilesDto();
         filesDto.setName("123.ww");
-        request = MockMvcRequestBuilders.post("/api/files/3").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(filesDto));
+        request = MockMvcRequestBuilders.post("/api/files/4").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(filesDto));
         mockMvc.perform(request).andExpect(status().isOk()).andDo(print());
-        request = MockMvcRequestBuilders.get("/api/dirs/3");
+        request = MockMvcRequestBuilders.delete("/api/files/4");
+        mockMvc.perform(request).andExpect(status().isOk()).andDo(print());
+        request = MockMvcRequestBuilders.post("/api/files/5").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(filesDto));
+        mockMvc.perform(request).andExpect(status().isOk()).andDo(print());
+        request = MockMvcRequestBuilders.get("/api/dirs/4");
         mockMvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("$.result_data.files[0].name", is("123.ww"))).andDo(print());
     }
 

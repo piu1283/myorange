@@ -3,7 +3,7 @@ INSERT INTO
 `t_user` (`birthday`,`first_name`,`last_name`,`email`,`gender`,`password`,`used_size` )
 VALUES
 -- password is 123123
-('2019-09-30', 'John', 'Wick', 'johnwick123@gmail.com', 1, '$2a$10$BnXQyK65iP5wdnCz.B00aunLi30shp.HohGy4i2JNUEnq9EVemQUm', 107080),
+('2019-09-30', 'John', 'Wick', 'johnwick123@gmail.com', 1, '$2a$10$BnXQyK65iP5wdnCz.B00aunLi30shp.HohGy4i2JNUEnq9EVemQUm', 1070800),
 ('2019-02-21', 'Bastin', 'Jiber', 'basji33@gmail.com', 2, '$2a$10$BnXQyK65iP5wdnCz.B00aunLi30shp.HohGy4i2JNUEnq9EVemQUm', 83421);
 
 -- admin table
@@ -83,9 +83,9 @@ VALUES ('com.ood.myorange.config.sys.MailConfig', '{\"mail_address\":\"myorange0
 
 -- share table
 INSERT INTO
-`t_share` (`user_id`,`file_id`,`share_type`,`share_pass`,`share_deadline`,`share_key`,`share_url`)
+`t_share` (`user_id`,`file_id`,`share_type`,`share_pass`,`share_deadline`,`share_key`)
 VALUES
-(1, 3, "PWD", "1234", "2020-06-07 23:56:40", "ABCDEF", "192.168.1.159"),
-(1, 4, "PWD", "1234", "2020-02-07 23:56:40", "ABCABC", "192.168.1.159"),
-(1, 5, "NONEPWD", "1234", "2020-06-07 23:56:40", "DEFDEF", "192.168.1.159");
+(1, 3, "PWD", "1234", "2020-06-07 23:56:40", "ABCDEF"),
+(1, 4, "PWD", "1234", "2020-02-07 23:56:40", "ABCABC"),
+(1, 5, "NONEPWD", "1234", "2020-06-07 23:56:40", "DEFDEF");
 
