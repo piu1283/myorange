@@ -19,6 +19,7 @@ public class ShareFileDto {
     private int shareId;
     private int fileId;
     private String name;
+    private String suffixes;
     private FileType type;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -28,7 +29,7 @@ public class ShareFileDto {
     private boolean hasPassword;
     private String shareKey;
     private String password;
-    private Long size;
+    private String size;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createDate;

@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class ShareUtil {
-    private static final String URL_FORMAT = "http://34.204.85.79:8082/?share_id=%s";
+    private static final String URL_FORMAT = "http://34.204.85.79:8082/?key=%s";
     public static String generateShareUrl(String shareKey) {
         return String.format(URL_FORMAT, shareKey);
     }

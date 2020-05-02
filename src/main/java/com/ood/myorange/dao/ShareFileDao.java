@@ -53,8 +53,8 @@ public interface ShareFileDao extends BaseDao<ShareFile> {
     @Delete("DELETE FROM `t_share` WHERE id = #{shareId}")
     void deleteShareFile(int shareId);
 
-    @Insert("INSERT into `t_share` (user_id,file_id,share_type,share_pass,share_deadline,share_key,share_url) VALUES(#{userId},#{fileId},#{shareType},#{sharePass},#{deadline},#{shareKey},#{shareUrl})")
-    void insertShareFile(Integer userId, Integer fileId, ShareType shareType, String sharePass, Timestamp deadline, String shareKey, String shareUrl);
+    @Insert("INSERT into `t_share` (user_id,file_id,share_type,share_pass,share_deadline,share_key) VALUES(#{userId},#{fileId},#{shareType},#{sharePass},#{deadline},#{shareKey})")
+    void insertShareFile(Integer userId, Integer fileId, ShareType shareType, String sharePass, Timestamp deadline, String shareKey);
 
     @Update("UPDATE `t_share` SET share_deadline = #{deadline}, download_limitation = #{limitDownloadTimes}, share_type=#{shareType} WHERE id = #{shareId}")
     void updateShareFileById(int shareId, Timestamp deadline, int limitDownloadTimes, ShareType shareType);

@@ -27,13 +27,13 @@ VALUES
 -- user_file
 
 INSERT INTO
-`user_file`(`user_id`,`dir_id`,`origin_id`,`file_size`,`file_name`,`file_type`,`suffixes`)
+`user_file`(`user_id`,`dir_id`,`origin_id`,`file_size`,`file_name`,`file_type`,`suffixes`,`file_status`)
 VALUES
-(1, 1, 1, 3456324, "file_", 'DOCUMENT' , "txt"),
-(1, 2, 2, 83421, "file_1a_a", 'VIDEO' , "avi"),
-(1, 3, 2, 83421, "file_1b_a", 'VIDEO' , "avi"),
-(1, 4, 3, 23425, "file_2a_a", 'AUDIO', 'mp3'),
-(1, 4, 4, 234, "file_2a_b", 'AUDIO', 'mp3');
+(1, 1, 1, 3456324, "file_", 'DOCUMENT' , "txt", 'NORMAL'),
+(1, 2, 2, 83421, "file_1a_a", 'VIDEO' , "avi", 'NORMAL'),
+(1, 3, 2, 83421, "file_1b_a", 'VIDEO' , "avi", 'SHARED'),
+(1, 4, 3, 23425, "file_2a_a", 'AUDIO', 'mp3', 'SHARED'),
+(1, 4, 4, 234, "file_2a_b", 'AUDIO', 'mp3', 'SHARED');
 
 -- user_dir
 
