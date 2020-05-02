@@ -12,6 +12,7 @@ import com.ood.myorange.service.FileService;
 import com.ood.myorange.service.ShareFileService;
 import com.ood.myorange.util.InternetIpUtil;
 import com.ood.myorange.util.ShareUtil;
+import com.ood.myorange.util.SizeUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,21 +97,15 @@ public class ShareFileServiceImpl implements ShareFileService {
         UserFile userFile = fileService.getUserFileById(fileID);
         if (userFile.getFileStatus() == FileStatus.SHARED) {
             ShareFile shareFile = shareFileDao.SelectShareFileByFileId(fileID);
-            updateShareFile(shareFile.getId(), deadline, limitDownloadTimes, hasPassword);
-            return mergeShareFileAndUserFileToShareFileDto(shareFile);
+            return updateShareFile(shareFile.getId(), deadline, limitDownloadTimes, hasPassword);
         }
         fileService.changeFileStatus(userFile.getFileId(), FileStatus.SHARED);
         ShareType shareType = hasPassword ? ShareType.PWD : ShareType.NONEPWD;
         String sharePass = generateSharePass();
         String shareKey = generateShareKey(userFile);
-        String ip = InternetIpUtil.INTERNET_IP;
-        shareFileDao.insertShareFile(userFile.getUserId(), userFile.getFileId(), shareType, sharePass, deadline, shareKey, ip);
-        if (!hasPassword)
-            return getShareFileByShareKey(shareKey, "");
-        else {
-            ShareFile shareFile = shareFileDao.SelectShareFileByShareKey(shareKey);
-            return getShareFileByShareKey(shareKey, shareFile.getSharePass());
-        }
+        shareFileDao.insertShareFile(userFile.getUserId(), userFile.getFileId(), shareType, sharePass, deadline, shareKey);
+        ShareFile sf = shareFileDao.SelectShareFileByShareKey(shareKey);
+            return mergeShareFileAndUserFileToShareFileDto(sf);
     }
 
 
@@ -127,9 +122,10 @@ public class ShareFileServiceImpl implements ShareFileService {
         shareFileDto.setLimitDownloadTimes(sf.getDownloadLimitation());
         shareFileDto.setName(userFile.getFileName());
         shareFileDto.setPassword(sf.getSharePass());
-        shareFileDto.setSize(userFile.getFileSize());
         shareFileDto.setShareKey(sf.getShareKey());
         shareFileDto.setType(userFile.getFileType());
+        shareFileDto.setSuffixes(userFile.getSuffixes());
+        shareFileDto.setSize(SizeUtil.getPrintSize(userFile.getFileSize()));
         // add share url logic
         String shareUrl = ShareUtil.generateShareUrl(sf.getShareKey());
         shareFileDto.setShareUrl(shareUrl);
