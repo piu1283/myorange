@@ -41,7 +41,7 @@ public class AdminUserController {
 
     @PostMapping("/users/{id}")
     public void changeUserPermissionAndMemory(@PathVariable("id") int userId, @RequestBody AdminUserDto adminUserDto) {
-        if (adminUserDto.getUsedStorage() != null && adminUserDto.getUsedStorage() > 107_374_182_400L) {
+        if (adminUserDto.getUsedStorage() != null && adminUserDto.getTotalStorage() > 107_374_182_400L) {
             throw new InvalidRequestException("storage cannot exceed 100G");
         }
         adminUserDto.setId(userId);
@@ -50,7 +50,7 @@ public class AdminUserController {
 
     @PutMapping("/users")
     public void addUser(@RequestBody AdminUserDto adminUserDto) {
-        if (adminUserDto.getUsedStorage() != null && adminUserDto.getUsedStorage() > 107_374_182_400L) {
+        if (adminUserDto.getUsedStorage() != null && adminUserDto.getTotalStorage() > 107_374_182_400L) {
             throw new InvalidRequestException("storage cannot exceed 100G");
         }
         if (!NamingUtil.validEmailAddress(adminUserDto.getEmail())) {

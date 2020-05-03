@@ -1,5 +1,6 @@
 package com.ood.myorange.service.impl;
 
+import com.ood.myorange.auth.ICurrentAccount;
 import com.ood.myorange.constant.enumeration.FileStatus;
 import com.ood.myorange.constant.enumeration.ShareType;
 import com.ood.myorange.dao.ShareFileDao;
@@ -13,6 +14,7 @@ import com.ood.myorange.service.ShareFileService;
 import com.ood.myorange.util.InternetIpUtil;
 import com.ood.myorange.util.ShareUtil;
 import com.ood.myorange.util.SizeUtil;
+import com.ood.myorange.util.TimeUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
- * Created by Chen on 2/24/20.
+ * Created by Linkun on 2/24/20.
  */
 @Service
 public class ShareFileServiceImpl implements ShareFileService {
@@ -35,10 +35,13 @@ public class ShareFileServiceImpl implements ShareFileService {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    ICurrentAccount currentAccount;
 
     @Override
     public List<ShareFileDto> getAllShareFiles() {
-        List<ShareFile> shareFileList = shareFileDao.SelectAllShareFileInfo();
+        int userId = currentAccount.getUserInfo().getId();
+        List<ShareFile> shareFileList = shareFileDao.SelectAllShareFileInfo(userId);
         List<ShareFileDto> result = new ArrayList<>();
         for (ShareFile sf : shareFileList) {
             ShareFileDto shareFileDto = mergeShareFileAndUserFileToShareFileDto(sf);
@@ -61,7 +64,6 @@ public class ShareFileServiceImpl implements ShareFileService {
             return mergeShareFileAndUserFileToShareFileDto(shareFile);
         } else {
             //deadline expire
-            deleteShareFile(shareFile.getId());
             throw new ResourceNotFoundException("deadline expired, this file is not shared");
         }
     }
@@ -81,11 +83,9 @@ public class ShareFileServiceImpl implements ShareFileService {
     public void deleteShareFile(int shareId) {
         ShareFile shareFile = shareFileDao.SelectShareFileByShareId(shareId);
         if (shareFile == null) throw new ResourceNotFoundException("share id not found");
-        if (validateDeadline(shareFile)) {
-            UserFile userFile = fileService.getUserFileById(shareFile.getFileID());
-            if (shareFile.getUserId().equals(userFile.getUserId())) {
-                throw new ForbiddenException("fail to delete, this file not belong to this user");
-            }
+        UserFile userFile = fileService.getUserFileById(shareFile.getFileID());
+        if (!shareFile.getUserId().equals(userFile.getUserId())) {
+            throw new ForbiddenException("fail to delete, this file not belong to this user");
         }
         fileService.changeFileStatus(shareFile.getFileID(), FileStatus.NORMAL);
         shareFileDao.deleteShareFile(shareId);
@@ -103,9 +103,12 @@ public class ShareFileServiceImpl implements ShareFileService {
         ShareType shareType = hasPassword ? ShareType.PWD : ShareType.NONEPWD;
         String sharePass = generateSharePass();
         String shareKey = generateShareKey(userFile);
-        shareFileDao.insertShareFile(userFile.getUserId(), userFile.getFileId(), shareType, sharePass, deadline, shareKey);
+        if (limitDownloadTimes <= 0) {
+            limitDownloadTimes = -1;
+        }
+        shareFileDao.insertShareFile(userFile.getUserId(), userFile.getFileId(), shareType, sharePass, deadline, shareKey, limitDownloadTimes);
         ShareFile sf = shareFileDao.SelectShareFileByShareKey(shareKey);
-            return mergeShareFileAndUserFileToShareFileDto(sf);
+        return mergeShareFileAndUserFileToShareFileDto(sf);
     }
 
 
@@ -121,7 +124,11 @@ public class ShareFileServiceImpl implements ShareFileService {
         shareFileDto.setHasPassword(sf.getShareType() == ShareType.PWD);
         shareFileDto.setLimitDownloadTimes(sf.getDownloadLimitation());
         shareFileDto.setName(userFile.getFileName());
-        shareFileDto.setPassword(sf.getSharePass());
+        if(sf.getShareType() != ShareType.PWD){
+            shareFileDto.setPassword("");
+        }else {
+            shareFileDto.setPassword(sf.getSharePass());
+        }
         shareFileDto.setShareKey(sf.getShareKey());
         shareFileDto.setType(userFile.getFileType());
         shareFileDto.setSuffixes(userFile.getSuffixes());
@@ -133,7 +140,7 @@ public class ShareFileServiceImpl implements ShareFileService {
     }
 
     public boolean validateDeadline(ShareFile share) {
-        return share.getShareDeadline().getTime() >= System.currentTimeMillis();
+        return share.getShareDeadline().getTime() >= TimeUtil.getCurrentTimeStamp().getTime();
     }
 
     public String generateSharePass() {
