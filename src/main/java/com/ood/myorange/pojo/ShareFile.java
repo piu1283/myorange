@@ -48,6 +48,5 @@ public class ShareFile {
     private Integer downloadLimitation;
     private Timestamp shareDeadline;
     private String shareKey;
-    private String shareUrl;
 
 }

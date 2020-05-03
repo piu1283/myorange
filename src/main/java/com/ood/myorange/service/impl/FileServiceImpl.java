@@ -9,6 +9,7 @@ import com.ood.myorange.dto.FileUploadDto;
 import com.ood.myorange.dto.FilesDto;
 import com.ood.myorange.dto.UserInfo;
 import com.ood.myorange.exception.ForbiddenException;
+import com.ood.myorange.exception.InvalidRequestException;
 import com.ood.myorange.exception.ResourceNotFoundException;
 import com.ood.myorange.pojo.OriginalFile;
 import com.ood.myorange.pojo.UserFile;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +85,31 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateFileName(String name, int id) {
         UserFile updateObj = new UserFile(id);
-        UserFile userFile = getUserFileById(id);
-        checkFile(userFile);
+        UserFile targetFile = getUserFileById(id);
+        checkFile(targetFile);
+        UserFile sameNameFile = userFileDao.getUserFileByNameUnderDir(targetFile.getDirId(), name);
+        boolean res = deleteOneFileForReal(sameNameFile);
+        if (!res) {
+            throw new InvalidRequestException("There is already a file have same name under this dir.");
+        }
         updateObj.setFileName(name);
         userFileDao.updateByPrimaryKeySelective(updateObj);
+    }
+
+    @Transactional
+    private boolean deleteOneFileForReal (UserFile userFile){
+        if (userFile != null) {
+            if (userFile.getDeleted()) {
+                userFileDao.deleteFileByIdForReal(userFile.getFileId());
+                originalFileDao.decreaseRefCountByOriginId(userFile.getOriginId());
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

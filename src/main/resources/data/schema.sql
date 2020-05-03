@@ -84,7 +84,6 @@ CREATE TABLE `t_share` (
 	`download_limitation` INT(11) NOT NULL DEFAULT '-1' COMMENT 'download count limitation, [-1] means infinit',
     `share_deadline` DATETIME DEFAULT "1970-01-01 00:00:00" COMMENT 'expired time, every share must have an expire time',
     `share_key` VARCHAR(255) NOT NULL COMMENT 'string that store in redis as the key',
-    `share_url` VARCHAR(225) DEFAULT '' COMMENT 'share url of front end',
     UNIQUE KEY `share_unique` (`user_id`,`file_id`),
     UNIQUE KEY `share_key_unique` (`share_key`)
 ) COMMENT 'share table';

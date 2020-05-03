@@ -72,4 +72,10 @@ public interface UserFileDao extends BaseDao<UserFile> {
 
     @Select("SELECT * FROM user_file WHERE `file_name`=#{name} AND `suffixes`=#{suffixes} AND `dir_id`=#{dirId}")
     UserFile getUserFileByNameAndSuffixesAndDirId(String name, String suffixes, int dirId);
+
+    @Select("SELECT * FROM user_file WHERE `file_name`=#{fileName} AND `dir_id`=#{dirId}")
+    UserFile getUserFileByNameUnderDir(int dirId, String fileName);
+
+    @Delete("DELETE FROM `user_file` WHERE `file_id`=#{fileId}")
+    void deleteFileByIdForReal(int fileId);
 }
