@@ -47,15 +47,15 @@ public interface ShareFileDao extends BaseDao<ShareFile> {
     @Select("SELECT * FROM `t_share` WHERE id=#{share_id} AND CURRENT_TIMESTAMP < share_deadline")
     ShareFile SelectShareFileIfDeadlineNotExpired(Integer shareId);
 
-    @Select("SELECT * FROM `t_share`")
-    List<ShareFile> SelectAllShareFileInfo();
+    @Select("SELECT * FROM `t_share` WHERE `user_id`=#{userId}")
+    List<ShareFile> SelectAllShareFileInfo(int userId);
 
-    @Delete("DELETE FROM `t_share` WHERE id = #{shareId}")
+    @Delete("DELETE FROM `t_share` WHERE id=#{shareId}")
     void deleteShareFile(int shareId);
 
-    @Insert("INSERT into `t_share` (user_id,file_id,share_type,share_pass,share_deadline,share_key) VALUES(#{userId},#{fileId},#{shareType},#{sharePass},#{deadline},#{shareKey})")
-    void insertShareFile(Integer userId, Integer fileId, ShareType shareType, String sharePass, Timestamp deadline, String shareKey);
+    @Insert("INSERT into `t_share` (user_id,file_id,share_type,share_pass,share_deadline,share_key, download_limitation) VALUES(#{userId},#{fileId},#{shareType},#{sharePass},#{deadline},#{shareKey},#{limitTime})")
+    void insertShareFile(Integer userId, Integer fileId, ShareType shareType, String sharePass, Timestamp deadline, String shareKey, int limitTime);
 
-    @Update("UPDATE `t_share` SET share_deadline = #{deadline}, download_limitation = #{limitDownloadTimes}, share_type=#{shareType} WHERE id = #{shareId}")
+    @Update("UPDATE `t_share` SET share_deadline=#{deadline}, download_limitation=#{limitDownloadTimes}, share_type=#{shareType} WHERE id=#{shareId}")
     void updateShareFileById(int shareId, Timestamp deadline, int limitDownloadTimes, ShareType shareType);
 }

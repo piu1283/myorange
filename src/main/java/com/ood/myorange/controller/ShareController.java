@@ -21,11 +21,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@RequestMapping("/api")
 public class ShareController {
-
-    @Autowired
-    RedisUtil redisUtil;
 
     @Autowired
     ICurrentAccount currentAccount;
@@ -36,7 +32,7 @@ public class ShareController {
     @Autowired
     ShareFileService shareFileService;
 
-    @PutMapping("/shares")
+    @PutMapping("/api/shares")
     public ShareFileDto addShareFile(@RequestBody AddShareFileRequest addShareFileRequest) {
         UserFile userFile = fileService.getUserFileById(addShareFileRequest.getFileId());
         validateFileBelongToThisUser(userFile);
@@ -45,7 +41,7 @@ public class ShareController {
         return result;
     }
 
-    @GetMapping("/shares")
+    @GetMapping("/api/shares")
     public List<ShareFileDto> getAllShareFile() {
         return shareFileService.getAllShareFiles();
     }
@@ -55,12 +51,12 @@ public class ShareController {
         return shareFileService.getShareFileByShareKey(shareKey, password);
     }
 
-    @PostMapping("/shares/{id}")
+    @PostMapping("/api/shares/{id}")
     public ShareFileDto updateShareFile(@PathVariable("id") int shareId, @RequestBody ShareFileRequest shareFileRequest) {
         return shareFileService.updateShareFile(shareId, shareFileRequest.getDeadline(), shareFileRequest.getLimitDownloadTimes(), shareFileRequest.getHasPassword());
     }
 
-    @DeleteMapping("/shares/{id}")
+    @DeleteMapping("/api/shares/{id}")
     public void deleteShareFile(@PathVariable("id") int shareId) {
         shareFileService.deleteShareFile(shareId);
     }
