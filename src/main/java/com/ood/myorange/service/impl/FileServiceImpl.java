@@ -17,6 +17,7 @@ import com.ood.myorange.service.FileService;
 import com.ood.myorange.util.FileTypeUtil;
 import com.ood.myorange.util.NamingUtil;
 import com.ood.myorange.util.SizeUtil;
+import com.ood.myorange.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -155,7 +156,8 @@ public class FileServiceImpl implements FileService {
             originalFileDao.decreaseRefCountByOriginId(userFile.getOriginId());
             userFile.setFileName(fileName);
             userFile.setSuffixes(suffixes);
-            userFile.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            userFile.setFileSize(uploadDto.getSize());
+            userFile.setCreateTime(TimeUtil.getCurrentTimeStamp());
             userFile.setDeleted(false);
             userFile.setDirId(uploadDto.getDirId());
             userFile.setModifyTime(null);
@@ -169,6 +171,7 @@ public class FileServiceImpl implements FileService {
             userFile.setFileName(fileName);
             userFile.setSuffixes(suffixes);
             userFile.setDirId(uploadDto.getDirId());
+            userFile.setCreateTime(TimeUtil.getCurrentTimeStamp());
             userFile.setUserId(userId);
             userFile.setOriginId(originId);
             userFile.setFileSize( uploadDto.getSize() );
