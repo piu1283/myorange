@@ -47,7 +47,7 @@ spring:
   datasource:
     username: root
     password: 123123123
-    url: jdbc:mysql://localhost:3306/db_test?serverTimezone=GMT-5
+    url: jdbc:mysql://localhost:3306/db_test?serverTimezone=GMT-4
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     # default sql script when spring started
